@@ -1,0 +1,38 @@
+*   Trying 31.13.95.8...
+* TCP_NODELAY set
+* Connected to mbasic.facebook.com (31.13.95.8) port 443 (#0)
+* ALPN, offering http/1.1
+* Cipher selection: ALL:!EXPORT:!EXPORT40:!EXPORT56:!aNULL:!LOW:!RC4:@STRENGTH
+* successfully set certificate verify locations:
+*   CAfile: F:\Tools\xampp\php\lib\5719158-master\cacert.pem
+  CApath: none
+* SSL connection using TLSv1.2 / ECDHE-ECDSA-AES128-GCM-SHA256
+* ALPN, server accepted to use http/1.1
+* Server certificate:
+*  subject: C=US; ST=California; L=Menlo Park; O=Facebook, Inc.; CN=*.facebook.com
+*  start date: Dec  9 00:00:00 2016 GMT
+*  expire date: Jan 25 12:00:00 2018 GMT
+*  subjectAltName: host "mbasic.facebook.com" matched cert's "*.facebook.com"
+*  issuer: C=US; O=DigiCert Inc; OU=www.digicert.com; CN=DigiCert SHA2 High Assurance Server CA
+*  SSL certificate verify ok.
+> GET /1 HTTP/1.1
+Host: mbasic.facebook.com
+Accept: */*
+
+< HTTP/1.1 302 Found
+< P3P: CP="Facebook does not have a P3P policy. Learn why here: http://fb.me/p3p"
+< Location: https://www.facebook.com/unsupportedbrowser?_rdr
+< access-control-allow-method: OPTIONS
+< Access-Control-Allow-Credentials: true
+< Content-Type: application/xhtml+xml; charset=utf-8
+< Vary: Origin
+< Access-Control-Expose-Headers: X-FB-Debug, X-Loader-Length
+< Access-Control-Allow-Origin: https://mbasic.facebook.com
+< Set-Cookie: datr=nF2wWM26SLNsM-RR4axpP8IO; expires=Sun, 24-Feb-2019 16:21:48 GMT; Max-Age=63072000; path=/; domain=.facebook.com; httponly
+< X-FB-Debug: PH/TaeYRCHOjgsjFetMs9AvPqgrevuEBc+lB/wACap1fpqe+AszT2bcs15w9NoTI2bdaXiQulFwZmVTdPXKcXA==
+< Date: Fri, 24 Feb 2017 16:21:48 GMT
+< Connection: keep-alive
+< Content-Length: 0
+< 
+* Curl_http_done: called premature == 0
+* Connection #0 to host mbasic.facebook.com left intact
