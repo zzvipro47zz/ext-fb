@@ -26,11 +26,11 @@ Route::group(['prefix' => 'facebook'], function() {
 
 	Route::get('/friend', ['uses' => 'FacebookController@friend', 'as' => 'fb.getFriend']);
 
-	Route::get('/postwall', ['uses' => 'Facebook\WallController@getWall', 'as' => 'fb.getWall']);
-	Route::post('/postwall', ['uses' => 'Facebook\WallController@postWall', 'as' => 'fb.postWall']);
+	Route::get('wall', ['uses' => 'Facebook\WallController@getWall', 'as' => 'fb.getWall']);
+	Route::post('wall', ['uses' => 'Facebook\WallController@postWall', 'as' => 'fb.postWall']);
 
-	Route::get('/postgroup', ['uses' => 'FacebookController@postgroup', 'as' => 'fb.getGroup']);
-	Route::post('/postgroup', ['uses' => 'FacebookController@postgroup', 'as' => 'fb.postGroup']);
+	Route::get('/group', ['uses' => 'FacebookController@getGroup', 'as' => 'fb.getGroup']);
+	Route::post('/group', ['uses' => 'FacebookController@postGroup', 'as' => 'fb.postGroup']);
 });
 
 

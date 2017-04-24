@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Facebook;
 
 use Curl;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Session;
 
-class WallController extends FacebookController {
+class WallController extends Controller {
 	public function getWall() {
-		return view('auto.postwall');
+		return view('auto.wall.getStatuses');
 	}
 
 	public function getStatuses() {
 		$feed = Curl::to(fb('graph', 'me/feed'));
-		dd($feed);
+		
 	}
 
 	public function postWall(Request $request) {
