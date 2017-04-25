@@ -1,5 +1,5 @@
 @extends('master')
-@section('page-wrapper')
+@section('page-content')
 	<div id="unfriend" class="tab-pane fade">
 		<div class="panel panel-default">
 			<div class="panel-heading">

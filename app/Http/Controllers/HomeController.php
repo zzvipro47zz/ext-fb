@@ -14,8 +14,12 @@ class HomeController extends Controller {
 		return view('dashboard');
 	}
 
-	public function friend() {
-		return view('auto.others.unfriend');
+	public function unfriend() {
+		return view('auto.friend.unfriend');
+	}
+
+	public function addfriend() {
+		return view('auto.friend.addfriend');
 	}
 
 	public function wall() {
