@@ -10,42 +10,42 @@
 				</a>
 			</li>
 			<li class="treeview">
-				<a href="{{ url('facebook/friend') }}">
+				<a href="#">
 					<i class="fa fa-user-circle" aria-hidden="true"></i> <span>Friend</span>
+					<span class="pull-right-container">
+						<i class="fa fa-angle-left pull-right"></i>
+					</span>
 				</a>
 				<ul class="treeview-menu">
 					<li><a href="{{ url('facebook/unfriend') }}"><i class="fa fa-user-times"></i> UnFriend</a></li>
 					<li><a href="{{ url('facebook/addfriend') }}"><i class="fa fa-user-plus"></i> Add Friend</a></li>
 				</ul>
 			</li>
+
 			<li class="treeview">
 				<a href="#">
 					<i class="fa fa-files-o"></i>
 					<span>Wall</span>
 					<span class="pull-right-container">
-						<span class="label label-primary pull-right">4</span>
+						<i class="fa fa-angle-left pull-right"></i>
 					</span>
 				</a>
 				<ul class="treeview-menu">
-					<li><a href="{{ url('facebook/wall') }}"><i class="fa fa-circle-o"></i> Un Friend</a></li>
-					<li><a href="pages/layout/boxed.html"><i class="fa fa-circle-o"></i> Add Friend</a></li>
-					<li><a href="pages/layout/fixed.html"><i class="fa fa-circle-o"></i> Fixed</a></li>
-					<li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li>
+					<li><a href="{{ url('facebook/wall') }}"><i class="fa fa-circle-o"></i> Đăng stt</a></li>
 				</ul>
 			</li>
+
 			<li class="treeview">
 				<a href="#">
 					<i class="fa fa-users"></i>
 					<span>Group</span>
 					<span class="pull-right-container">
-					<span class="label label-primary pull-right">4</span>
+						<i class="fa fa-angle-left pull-right"></i>
 					</span>
 				</a>
 				<ul class="treeview-menu">
-					<li><a href="{{ url('facebook/group') }}"><i class="fa fa-circle-o"></i> Top Navigation</a></li>
-					<li><a href="pages/layout/boxed.html"><i class="fa fa-circle-o"></i> Boxed</a></li>
-					<li><a href="pages/layout/fixed.html"><i class="fa fa-circle-o"></i> Fixed</a></li>
-					<li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li>
+					<li><a href="{{ url('facebook/postgroup') }}"><i class="fa fa-file-text"></i> Đăng bài lên group</a></li>
+					<li><a href="{{ url('facebook/groupjoin') }}"><i class="fa fa-circle-o"></i> Nhóm đã tham gia</a></li>
 				</ul>
 			</li>
 		</ul>

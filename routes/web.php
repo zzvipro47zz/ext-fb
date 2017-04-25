@@ -19,6 +19,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 	Route::get('/', 'AdminController@index');
 });
 
+// HomeController để lấy view hiển thị
 Route::group(['prefix' => 'facebook'], function() {
 	Route::get('redirect', ['uses' => 'SocialController@redirectToProvider', 'as' => 'fb.redirect']);
 	Route::get('callback', ['uses' => 'SocialController@handleProviderCallback', 'as' => 'fb.callback']);
@@ -27,7 +28,7 @@ Route::group(['prefix' => 'facebook'], function() {
 	Route::get('/unfriend', 'HomeController@unfriend');
 	Route::get('/addfriend', 'HomeController@addfriend');
 
-	Route::get('wall', 'HomeController@Wall');
+	Route::get('postWall', 'HomeController@postWall');
 	Route::post('wall', 'Facebook\WallController@postWall');
 
 	Route::get('/group', 'HomeController@group');

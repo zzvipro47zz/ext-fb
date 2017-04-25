@@ -22,8 +22,8 @@ class HomeController extends Controller {
 		return view('auto.friend.addfriend');
 	}
 
-	public function wall() {
-		return view('auto.wall');
+	public function postWall() {
+		return view('auto.wall.postWall');
 	}
 
 	public function group() {
