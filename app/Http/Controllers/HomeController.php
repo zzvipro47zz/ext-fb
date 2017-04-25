@@ -11,10 +11,18 @@ class HomeController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function index() {
-		return view('home');
+		return view('dashboard');
 	}
 
-	public function unfriend() {
-		
+	public function friend() {
+		return view('auto.others.unfriend');
+	}
+
+	public function wall() {
+		return view('auto.wall');
+	}
+
+	public function group() {
+		return view('auto.group');
 	}
 }

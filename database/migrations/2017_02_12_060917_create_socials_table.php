@@ -14,7 +14,7 @@ class CreateSocialsTable extends Migration {
 		Schema::create('socials', function (Blueprint $table) {
 			$table->increments('id');
 			$table->string('provider_user_id', 20);
-			$table->string('accesstoken');
+			$table->string('access_token');
 			$table->string('provider');
 			$table->unsignedInteger('user_id');
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

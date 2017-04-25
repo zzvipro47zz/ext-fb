@@ -24,12 +24,12 @@ Route::group(['prefix' => 'facebook'], function() {
 	Route::get('callback', ['uses' => 'SocialController@handleProviderCallback', 'as' => 'fb.callback']);
 	// end
 
-	Route::get('/friend', ['uses' => 'FacebookController@friend', 'as' => 'fb.getFriend']);
+	Route::get('/friend', ['uses' => 'HomeController@friend', 'as' => 'fb.getFriend']);
 
-	Route::get('wall', ['uses' => 'Facebook\WallController@getWall', 'as' => 'fb.getWall']);
+	Route::get('wall', ['uses' => 'HomeController@Wall', 'as' => 'fb.getWall']);
 	Route::post('wall', ['uses' => 'Facebook\WallController@postWall', 'as' => 'fb.postWall']);
 
-	Route::get('/group', ['uses' => 'FacebookController@getGroup', 'as' => 'fb.getGroup']);
+	Route::get('/group', ['uses' => 'HomeController@group', 'as' => 'fb.getGroup']);
 	Route::post('/group', ['uses' => 'FacebookController@postGroup', 'as' => 'fb.postGroup']);
 });
 
@@ -37,3 +37,4 @@ Route::group(['prefix' => 'facebook'], function() {
 Route::get('/logout' , 'Auth\LoginController@logout');
 
 Route::get('/', ['uses' => 'HomeController@index', 'as' => 'index']);
+Route::get('/dashboard', ['uses' => 'HomeController@index', 'as' => 'index']);
