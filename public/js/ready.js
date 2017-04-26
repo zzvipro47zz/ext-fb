@@ -1,36 +1,4 @@
 $(document).ready(function() {
-	// dataTables
-	/*$('#dataTables-send_sms, #dataTables-post_wall, #dataTables-post_group, #dataTables-unfriend').DataTable({
-		responsive: true
-	});
-
-	var all_friends = document.querySelectorAll('input[function=send_sms]').length;
-	document.getElementById('all_friends').innerHTML = all_friends;
-
-	$('#check_all').change(function() {
-		$("input[name='send_sms[]']").prop('checked', $(this).prop('checked'));
-		document.getElementById('friend_select').innerHTML = this.checked ? all_friends : 0;
-	});
-
-	$("input[name='send_sms[]']").change(function() {
-		var friend_select = $("input[name='send_sms[]']:checked").length;
-
-		document.getElementById('friend_select').innerHTML = friend_select;
-		if (friend_select_count == all_friends) {
-			$('#check_all').prop('checked', true);
-			return true;
-		}
-
-		$(this).each(function(key, value) {
-			if ($(value[key]).prop('unchecked', $(this).prop('checked'))) {
-				$('#check_all').prop('checked', false);
-				return false;
-			}
-		});
-	});*/
-	// ./dataTables
-
-
 	// file upload
 	$('#fileUpload').change(function() {
 		var object = $(this)[0];

@@ -8,10 +8,6 @@ use Illuminate\Http\Request;
 use Session;
 
 class WallController extends Controller {
-	public function getWall() {
-		return view('auto.wall.getStatuses');
-	}
-
 	public function getStatuses() {
 		$feed = Curl::to(fb('graph', 'me/feed'));
 		
