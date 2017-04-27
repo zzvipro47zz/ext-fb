@@ -24,7 +24,9 @@ class SocialController extends Controller {
 			'user_photos',
 			'user_posts',
 			'user_status',
+			'user_friends',
 			'publish_actions',
+			'publish_pages',
 		])->redirect();
 	}
 
@@ -40,17 +42,17 @@ class SocialController extends Controller {
 
 		$social = Social::where('provider_user_id', $user->id)->where('provider', 'facebook')->first();
 		if ($social) {
-			$social->accesstoken = $user->token;
+			$social->access_token = $user->token;
 			$social->save();
 
 			$u = User::where('email', $user->email)->first();
 			Auth::login($u);
 
-			return redirect()->back();
+			return redirect()->route('index');
 		} else {
 			$temp = new Social;
 			$temp->provider_user_id = $user->id;
-			$temp->accesstoken = $user->token;
+			$temp->access_token = $user->token;
 			$temp->provider = 'facebook';
 
 			$u = User::where('email', $user->email)->first();
@@ -65,7 +67,7 @@ class SocialController extends Controller {
 
 			Auth::login($u);
 
-			return redirect()->back();
+			return redirect()->route('index');
 		}
 	}
 }

@@ -8,9 +8,23 @@ use Illuminate\Http\Request;
 use Session;
 
 class WallController extends Controller {
+	public function __construct() {
+		$this->middleware('auth');
+	}
+
 	public function getStatuses() {
 		$feed = Curl::to(fb('graph', 'me/feed'));
 		
+	}
+
+	public function getFriends($relative_url) {
+		$info = Session::get('fb-sdk');
+		$friends = Curl::to(fb('graph', $info->id))
+			->withData([
+				'access_token' => $info->token
+			])->get();
+		dd($friends);
+		return view('auto.friend.'.$relative_url.'friend');
 	}
 
 	public function postWall(Request $request) {

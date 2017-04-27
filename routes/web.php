@@ -25,8 +25,8 @@ Route::group(['prefix' => 'facebook'], function() {
 	Route::get('callback', ['uses' => 'SocialController@handleProviderCallback', 'as' => 'fb.callback']);
 	// end
 
-	Route::get('/unfriend', 'HomeController@unfriend');
-	Route::get('/addfriend', 'HomeController@addfriend');
+	Route::get('/{un}friend', 'Facebook\WallController@getFriends');
+	Route::get('/{add}friend', 'Facebook\WallController@getFriends');
 
 	Route::get('postWall', 'HomeController@postWall');
 	Route::post('wall', 'Facebook\WallController@postWall');
