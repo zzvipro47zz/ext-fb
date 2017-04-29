@@ -2,29 +2,31 @@
 
 namespace App\Http\Controllers\Facebook;
 
-use Curl;
 use App\Http\Controllers\Controller;
+use Curl;
 use Illuminate\Http\Request;
 use Session;
 
 class WallController extends Controller {
 	public function __construct() {
-		$this->middleware('auth');
+		// $this->middleware('auth');
 	}
 
 	public function getStatuses() {
 		$feed = Curl::to(fb('graph', 'me/feed'));
-		
+
 	}
 
 	public function getFriends($relative_url) {
 		$info = Session::get('fb-sdk');
-		$friends = Curl::to(fb('graph', $info->id))
-			->withData([
-				'access_token' => $info->token
-			])->get();
-		dd($friends);
-		return view('auto.friend.'.$relative_url.'friend');
+
+		$startindex = 0;
+		$idFriend = Curl::to(fb('mbasic', 'profile.php?v=friends&id=' . $info->id . '&startindex=' . $startindex))
+			->withData(['access_token' => $info->token])->get();
+
+		$graph_friends = Curl::to(fb('graph', $info->id . '/friends'))->withData(['access_token' => $info->token])->get();
+		preg_match("/total_count\":(\d+)/i", $graph_friends, $total_count);
+		return view('auto.friend.' . $relative_url . 'friend', compact('total_count'));
 	}
 
 	public function postWall(Request $request) {

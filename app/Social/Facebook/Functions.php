@@ -1,6 +1,6 @@
 <?php
 
-function fb($sub_domain = 'www', $relative_url) {
+function fb($sub_domain, $relative_url) {
 	$url = 'https://' . $sub_domain . '.facebook.com/';
 
 	if ($relative_url) {

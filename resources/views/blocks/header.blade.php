@@ -20,13 +20,13 @@
 				@if (Session::has('fb-sdk'))
 					<li class="dropdown user user-menu">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<img src="https://graph.facebook.com/v2.8/302391033497403/picture?width=160" class="user-image" alt="User Image">
+							<img src="{{ Session::get('fb-sdk')->avatar }}" class="user-image" alt="User Image">
 							<span class="hidden-xs">{{ Session::get('fb-sdk')->user['name'] }}</span>
 						</a>
 						<ul class="dropdown-menu">
 							<!-- User image -->
 							<li class="user-header">
-								<img src="https://graph.facebook.com/v2.8/302391033497403/picture?width=160" class="img-circle" alt="User Image">
+								<img src="{{ Session::get('fb-sdk')->avatar }}" class="img-circle" alt="User Image">
 								<p>{{ Session::get('fb-sdk')->user['name'] }}</p>
 							</li>
 							<!-- Menu Body -->

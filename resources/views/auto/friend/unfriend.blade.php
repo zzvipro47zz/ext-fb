@@ -9,7 +9,7 @@
 				</div>
 				<div class="box-body">
 					<form action="unfriend" class="form-group" method="post">
-						<h4>You choose <span class="label label-success" id="count-checkbox-unfriend">0</span> of <span class="label label-warning" id="all">0</span> friends to Unfriend</h4><br />
+						<h4>You choose <span class="label label-success" id="count-checkbox-unfriend">0</span> of <span class="label label-warning">{{ $total_count[1] }}</span> friends to Unfriend</h4><br />
 						<table class="table table-striped table-bordered table-hover" id="dataTables-unfriend">
 							<thead>
 								<tr>

@@ -1,6 +1,6 @@
 function checkbox(box_name, count_checkbox) {
-	var all = document.querySelectorAll('input[function=' + box_name + ']').length;
-	document.getElementById('all').innerHTML = all;
+	// var all = document.querySelectorAll('input[function=' + box_name + ']').length;
+	// document.getElementById('all').innerHTML = all;
 
 	$('#check_all').change(function() {
 		$("input[name='" + box_name + "[]']").prop('checked', $(this).prop('checked'));

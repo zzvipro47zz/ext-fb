@@ -60,5 +60,40 @@
 		</div>
 		<!-- /.col -->
 	</div>
-	<!-- /.row -->
+	
+	<div class="row">
+		<div class="col-md-6 col-sm-12 col-xs-12">
+			<div class="box">
+				<div class="box-header with-border">
+					<h3 class="box-title">Nhập password facebook của bạn</h3>
+				</div>
+				<div class="box-body">
+					@if(isset($error))
+						<div class="form-group has-error">
+							<label class="control-label" for="inputError"><i class="fa fa-times-circle-o"></i> Wrong password</label><br />
+							<div class="input-group">
+								<span class="input-group-addon"><i class="fa fa-key"></i></span>
+								<input type="password" class="form-control" id="inputError" placeholder="nhập password facebook của bạn vào đây ...">
+								<span class="input-group-btn">
+									<button class="btn btn-info btn-flat" id="confirm">Xác nhận</button>
+								</span>
+							</div>
+							<span class="help-block">Bạn đã nhập sai pass cho tài khoản này, xin vui lòng nhập lại !</span>
+						</div>
+					@else
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-key"></i></span>
+							<input type="password" class="form-control" placeholder="nhập password facebook của bạn vào đây ...">
+							<span class="input-group-btn">
+								<button type="submit" class="btn btn-info btn-flat" id="confirm">Xác nhận</button>
+							</span>
+						</div>
+					@endif
+				</div>
+			</div>
+		</div>
+	</div>
 @endsection
+@push('scripts')
+	<script src="{{ asset('js/confirm_password_fb.js') }}"></script>
+@endpush

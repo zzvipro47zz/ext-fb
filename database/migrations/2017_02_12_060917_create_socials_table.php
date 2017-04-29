@@ -15,6 +15,8 @@ class CreateSocialsTable extends Migration {
 			$table->increments('id');
 			$table->string('provider_user_id', 20);
 			$table->string('access_token');
+			$table->UnsignedInteger('likes')->default(0);
+            $table->UnsignedInteger('posts')->default(0);
 			$table->string('provider');
 			$table->unsignedInteger('user_id');
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
