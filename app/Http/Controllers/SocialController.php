@@ -2,72 +2,61 @@
 
 namespace App\Http\Controllers;
 
-use App\Social;
-use App\User;
 use Auth;
 use Illuminate\Http\Request;
-use Session;
-use Socialite;
+use Social;
+use User;
 
 class SocialController extends Controller {
-	/**
-	 * Redirect the user to the Facebook authentication page.
-	 *
-	 * @return Response
-	 */
-	public function redirectToProvider() {
-		return Socialite::driver('facebook')->scopes([
-			'email',
-			'public_profile',
-			'user_likes',
-			'user_videos',
-			'user_photos',
-			'user_posts',
-			'user_status',
-			'user_friends',
-			'publish_actions',
-			'publish_pages',
-		])->redirect();
-	}
+	public function login_facebook(Request $request) {
+		$user_info = sign_creator($request->username, $request->password);
 
-	/**
-	 * Obtain the user information from Facebook.
-	 *
-	 * @return Response
-	 */
-	public function handleProviderCallback(Request $request) {
-		$user = Socialite::driver('facebook')->user();
-		
-		Session::put('fb-sdk', $user);
+		preg_match('/uid\":(\d+),/i', $user_info, $uid);
+		preg_match('/access_token\":\"(\w+)\",/i', $user_info, $access_token);
+		preg_match('/session_cookies\":\[(.*)\],/i', $user_info, $session_cookies);
 
-		$social = Social::where('provider_user_id', $user->id)->where('provider', 'facebook')->first();
-		if ($social) {
-			$social->access_token = $user->token;
-			$social->save();
 
-			$u = User::where('email', $user->email)->first();
-			Auth::login($u);
+		$session_cookies = $user_info->session_cookies;
+		$len = count($session_cookies);
+		$cookie = '';
+		for ($i=0; $i < $len; $i++) { 
+			$cookie .= $session_cookies['name'] . '=' . $session_cookies['value'] . '; ';
+		}
 
-			return redirect()->route('index');
-		} else {
-			$temp = new Social;
-			$temp->provider_user_id = $user->id;
-			$temp->access_token = $user->token;
-			$temp->provider = 'facebook';
 
-			$u = User::where('email', $user->email)->first();
-			if (!$u) {
-				$u = User::create([
-					'name' => $user->name,
-					'email' => $user->email,
-				]);
+
+		if (!preg_match('/error_code/i', $user_info)) {
+			$social = Social::where('provider_user_id', $uid[1])->where('provider', 'facebook')->first();
+			if ($social) {
+				$social->access_token = $access_token[1];
+				$social->save();
+
+				$u = User::where('username', $request->username)->first();
+				Auth::login($u);
+
+				return redirect()->route('index');
+			} else {
+				$temp = new Social;
+				$temp->provider_user_id = $uid[1];
+				$temp->access_token = $access_token[1];
+				$temp->provider = 'facebook';
+
+				$u = User::where('username', $request->username)->first();
+				if (!$u) {
+					$u = User::create([
+						'name' => $user_info->name,
+						'username' => $request->username,
+					]);
+				}
+				$temp->user_id = $u->id;
+				$temp->save();
+
+				Auth::login($u);
+
+				return redirect()->route('index');
 			}
-			$temp->user_id = $u->id;
-			$temp->save();
-
-			Auth::login($u);
-
-			return redirect()->route('index');
+		} else {
+			return back()->with('error', 'Wrong username or password');
 		}
 	}
 }

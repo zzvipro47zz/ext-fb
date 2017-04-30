@@ -20,14 +20,14 @@
 				@if (Session::has('fb-sdk'))
 					<li class="dropdown user user-menu">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<img src="{{ Session::get('fb-sdk')->avatar }}" class="user-image" alt="User Image">
-							<span class="hidden-xs">{{ Session::get('fb-sdk')->user['name'] }}</span>
+							<img src="avatar" class="user-image" alt="User Image">
+							<span class="hidden-xs">name</span>
 						</a>
 						<ul class="dropdown-menu">
 							<!-- User image -->
 							<li class="user-header">
-								<img src="{{ Session::get('fb-sdk')->avatar }}" class="img-circle" alt="User Image">
-								<p>{{ Session::get('fb-sdk')->user['name'] }}</p>
+								<img src="avatar" class="img-circle" alt="User Image">
+								<p>email</p>
 							</li>
 							<!-- Menu Body -->
 							<li class="user-body">
@@ -47,7 +47,7 @@
 							<!-- Menu Footer-->
 							<li class="user-footer">
 								<div class="pull-left">
-									<a href="{!! htmlspecialchars(Session::get('fb-sdk')->user['link']) !!}" target="_blank" class="btn btn-default btn-flat">Profile</a>
+									<a href="link to profile" target="_blank" class="btn btn-default btn-flat">Profile</a>
 								</div>
 								<div class="pull-right">
 									<a href="/logout" class="btn btn-default btn-flat">Sign out</a>
@@ -56,7 +56,7 @@
 						</ul>
 					</li>
 				@else
-					<li><a href="{{ url('facebook/redirect') }}"><i class="fa fa-sign-in" aria-hidden="true"></i> Đăng nhập vào facebook</a></li>
+					<li><a href="/login"><i class="fa fa-sign-in" aria-hidden="true"></i> Đăng nhập vào facebook</a></li>
 				@endif
 			</ul>
 		</div>

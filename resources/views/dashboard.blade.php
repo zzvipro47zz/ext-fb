@@ -63,37 +63,35 @@
 	
 	<div class="row">
 		<div class="col-md-6 col-sm-12 col-xs-12">
-			<div class="box">
+			<div class="box box-info">
 				<div class="box-header with-border">
-					<h3 class="box-title">Nhập password facebook của bạn</h3>
+					<h3 class="box-title">Thông tin tài khoản facebook của bạn</h3>
 				</div>
 				<div class="box-body">
-					@if(isset($error))
-						<div class="form-group has-error">
-							<label class="control-label" for="inputError"><i class="fa fa-times-circle-o"></i> Wrong password</label><br />
-							<div class="input-group">
-								<span class="input-group-addon"><i class="fa fa-key"></i></span>
-								<input type="password" class="form-control" id="inputError" placeholder="nhập password facebook của bạn vào đây ...">
-								<span class="input-group-btn">
-									<button class="btn btn-info btn-flat" id="confirm">Xác nhận</button>
-								</span>
+					<form action="{{ route('fb.login') }}" class="form-horizontal" method="post">
+					{{ csrf_field() }}
+						@if(Session::has('error'))
+							<label for="warning" class="control-label"><i class="fa fa-times-circle-o"></i> {{ Session::flash('error') }}</label>
+						@endif
+							<div class="form-group{{ Session::has('error') ? ' has-error' : null }}">
+								<label for="username" class="col-sm-2 control-label">Username</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" name="username" placeholder="nhập email hoặc số điện thoại vào đây ...">
+								</div>
 							</div>
-							<span class="help-block">Bạn đã nhập sai pass cho tài khoản này, xin vui lòng nhập lại !</span>
+
+							<div class="form-group{{ Session::has('error') ? ' has-error' : null }}">
+								<label for="password" class="col-sm-2 control-label">Password</label>
+								<div class="col-sm-10">
+									<input type="password" name="password" class="form-control" placeholder="nhập password vào đây ...">
+								</div>
+							</div>
+						<div class="box-footer">
+							<button type="submit" class="btn btn-info pull-right">Đăng nhập</button>
 						</div>
-					@else
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-key"></i></span>
-							<input type="password" class="form-control" placeholder="nhập password facebook của bạn vào đây ...">
-							<span class="input-group-btn">
-								<button type="submit" class="btn btn-info btn-flat" id="confirm">Xác nhận</button>
-							</span>
-						</div>
-					@endif
+					</form>
 				</div>
 			</div>
 		</div>
 	</div>
 @endsection
-@push('scripts')
-	<script src="{{ asset('js/confirm_password_fb.js') }}"></script>
-@endpush

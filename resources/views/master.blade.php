@@ -23,7 +23,6 @@
 
 	{{-- my css --}}
 	<link href="{{ asset('css/send_sms.css') }}" rel="stylesheet">
-	<input type="hidden" value="{{ Session::get('fb-sdk')->token }}">
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 	@include('blocks.header')
