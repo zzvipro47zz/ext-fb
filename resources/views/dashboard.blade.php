@@ -68,30 +68,71 @@
 					<h3 class="box-title">Thông tin tài khoản facebook của bạn</h3>
 				</div>
 				<div class="box-body">
-					<form action="{{ route('fb.login') }}" class="form-horizontal" method="post">
-					{{ csrf_field() }}
-						@if(Session::has('error'))
-							<label for="warning" class="control-label"><i class="fa fa-times-circle-o"></i> {{ Session::flash('error') }}</label>
+					@if(Session::has('info_user_fb'))
+						@if(isset($success))
+							<div class="form-group has-success">
+								<label for="success" class="control-label"><i class="fa fa-check"></i> {{ $success }}</label>
+							</div>
 						@endif
-							<div class="form-group{{ Session::has('error') ? ' has-error' : null }}">
-								<label for="username" class="col-sm-2 control-label">Username</label>
+						<form role="form" class="form-horizontal">
+							<div class="form-group">
+								<label for="name" class="control-label col-sm-2">Name</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" name="username" placeholder="nhập email hoặc số điện thoại vào đây ...">
+									<input type="text" class="form-control" value="{{ Session::get('info_user_fb')->name }}" readonly disabled>
 								</div>
 							</div>
 
-							<div class="form-group{{ Session::has('error') ? ' has-error' : null }}">
-								<label for="password" class="col-sm-2 control-label">Password</label>
+							<div class="form-group">
+								<label for="email" class="control-label col-sm-2">Email</label>
 								<div class="col-sm-10">
-									<input type="password" name="password" class="form-control" placeholder="nhập password vào đây ...">
+									<input type="text" class="form-control" value="{{ Session::get('info_user_fb')->email }}" readonly disabled>
 								</div>
 							</div>
-						<div class="box-footer">
-							<button type="submit" class="btn btn-info pull-right">Đăng nhập</button>
-						</div>
-					</form>
+
+							<div class="form-group">
+								<label for="uid" class="control-label col-sm-2">ID</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" value="{{ Session::get('info_user_fb')->id }}" readonly disabled>
+								</div>
+							</div>
+						</form>
+					@else
+						<form action="{{ route('login') }}" class="form-horizontal" method="post">
+						{{ csrf_field() }}
+							@if(Session::has('error'))
+								<label for="warning" class="control-label"><i class="fa fa-times-circle-o"></i> {{ Session::get('error') }}</label>
+							@endif
+								<div class="form-group{{ Session::has('error') ? ' has-error' : null }}">
+									<label for="username" class="col-sm-2 control-label">Username</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" name="username" placeholder="nhập email hoặc số điện thoại vào đây ...">
+									</div>
+								</div>
+
+								<div class="form-group{{ Session::has('error') ? ' has-error' : null }}">
+									<label for="password" class="col-sm-2 control-label">Password</label>
+									<div class="col-sm-10">
+										<input type="password" name="password" class="form-control" placeholder="nhập password vào đây ...">
+									</div>
+								</div>
+							<div class="box-footer">
+								<button type="submit" class="btn btn-info pull-right">Đăng nhập</button>
+							</div>
+						</form>
+					@endif
 				</div>
 			</div>
 		</div>
 	</div>
 @endsection
+@push('scripts')
+	<script>
+		if ($('.has-success')) {
+			setTimeout(function() {
+				$('.has-success').fadeOut('slow', function() {
+					$(this).remove();
+				});
+			}, 5000);
+		}
+	</script>
+@endpush

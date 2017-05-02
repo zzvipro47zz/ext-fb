@@ -17,17 +17,18 @@
 		<div class="navbar-custom-menu">
 			<ul class="nav navbar-nav">
 				<!-- User Account: style can be found in dropdown.less -->
-				@if (Session::has('fb-sdk'))
+				@if (Session::has('info_user_fb'))
 					<li class="dropdown user user-menu">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<img src="avatar" class="user-image" alt="User Image">
-							<span class="hidden-xs">name</span>
+							<img src="" class="user-image" alt="User Image">
+							<span class="hidden-xs">{{ Session::get('info_user_fb')->name }}</span>
 						</a>
 						<ul class="dropdown-menu">
 							<!-- User image -->
 							<li class="user-header">
-								<img src="avatar" class="img-circle" alt="User Image">
-								<p>email</p>
+								<img src="" class="img-circle" alt="User Image">
+								<p>{{ Session::get('info_user_fb')->email }}</p>
+								<small>{{ Session::get('info_user_fb')->id }}</small>
 							</li>
 							<!-- Menu Body -->
 							<li class="user-body">
@@ -47,7 +48,7 @@
 							<!-- Menu Footer-->
 							<li class="user-footer">
 								<div class="pull-left">
-									<a href="link to profile" target="_blank" class="btn btn-default btn-flat">Profile</a>
+									<a href="{{ Session::get('info_user_fb')->link }}" target="_blank" class="btn btn-default btn-flat">Profile</a>
 								</div>
 								<div class="pull-right">
 									<a href="/logout" class="btn btn-default btn-flat">Sign out</a>
@@ -56,7 +57,7 @@
 						</ul>
 					</li>
 				@else
-					<li><a href="/login"><i class="fa fa-sign-in" aria-hidden="true"></i> Đăng nhập vào facebook</a></li>
+					<li><a href="./"><i class="fa fa-sign-in" aria-hidden="true"></i> Đăng nhập vào facebook</a></li>
 				@endif
 			</ul>
 		</div>

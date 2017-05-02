@@ -9,8 +9,12 @@ class User extends Authenticatable {
 	use Notifiable;
     
 	protected $fillable = [
-		'name', 'email', 'role',
+		'email', 'phone', 'password', 'role',
 	];
 
 	protected $hidden = ['rememberToken'];
+
+	public function to_social() {
+		return $this->hasOne('App\Social');
+	}
 }

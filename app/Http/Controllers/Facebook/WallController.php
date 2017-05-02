@@ -9,7 +9,7 @@ use Session;
 
 class WallController extends Controller {
 	public function __construct() {
-		// $this->middleware('auth');
+		$this->middleware('auth');
 	}
 
 	public function getStatuses() {
@@ -18,15 +18,14 @@ class WallController extends Controller {
 	}
 
 	public function getFriends($relative_url) {
-		$info = Session::get('fb-sdk');
+		$info = Session::get('info_user_fb');
+		$graph_friends = Curl::to(fb('graph', $info->id . '/friends'))->withData(['access_token' => $info->access_token])->get();
+		$graph_friends = json_decode($graph_friends);
 
-		$startindex = 0;
-		$idFriend = Curl::to(fb('mbasic', 'profile.php?v=friends&id=' . $info->id . '&startindex=' . $startindex))
-			->withData(['access_token' => $info->token])->get();
+		$total_count = count($graph_friends->data);
+		$friends = $graph_friends->data;
 
-		$graph_friends = Curl::to(fb('graph', $info->id . '/friends'))->withData(['access_token' => $info->token])->get();
-		preg_match("/total_count\":(\d+)/i", $graph_friends, $total_count);
-		return view('auto.friend.' . $relative_url . 'friend', compact('total_count'));
+		return view('auto.friend.' . $relative_url . 'friend', compact('friends', 'total_count'));
 	}
 
 	public function postWall(Request $request) {

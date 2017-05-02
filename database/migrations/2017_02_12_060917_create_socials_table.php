@@ -13,9 +13,10 @@ class CreateSocialsTable extends Migration {
 	public function up() {
 		Schema::create('socials', function (Blueprint $table) {
 			$table->increments('id');
+			$table->string('name');
 			$table->string('provider_user_id', 20);
-			$table->string('access_token');
-			$table->string('cookie');
+			$table->string('access_token', 300);
+			$table->string('cookie', 255);
 			$table->UnsignedInteger('likes')->default(0);
             $table->UnsignedInteger('posts')->default(0);
 			$table->string('provider');
