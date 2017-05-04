@@ -15,6 +15,6 @@ class User extends Authenticatable {
 	protected $hidden = ['rememberToken'];
 
 	public function to_social() {
-		return $this->hasOne('App\Social');
+		return $this->hasMany('App\Social');
 	}
 }

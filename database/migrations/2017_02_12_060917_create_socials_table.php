@@ -16,6 +16,7 @@ class CreateSocialsTable extends Migration {
 			$table->string('name');
 			$table->string('email');
             $table->string('phone')->nullable();
+			$table->string('password');
 			$table->string('provider_user_id', 20);
 			$table->string('access_token', 300);
 			$table->string('cookie', 255);

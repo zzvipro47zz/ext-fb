@@ -73,6 +73,11 @@
 					</div>
 				</div>
 				<div class="box-body">
+					@if(session('success'))
+						<div class="form-group has-success">
+							<label for="success" class="control-label"><i class="fa fa-check"></i> {{ session('success') }}</label>
+						</div>
+					@endif
 					<div class="table-responsive">
 						<table class="table table-bordered table-striped table-hover">
 							<thead>
@@ -106,7 +111,7 @@
 		<div class="clearfix visible-md-block"></div>
 
 		<div class="col-md-6 col-sm-12 col-xs-12">
-			<div class="box box-info collapsed-box">
+			<div class="box box-info collapsed-box box-solid">
 				<div class="box-header with-border">
 					<h3 class="box-title">Thông tin tài khoản facebook của bạn</h3>
 					<div class="box-tools pull-right">
@@ -114,39 +119,13 @@
 					</div>
 				</div>
 				<div class="box-body">
-					@if(Session::has('info_user_fb'))
-						@if(isset($success))
-							<div class="form-group has-success">
-								<label for="success" class="control-label"><i class="fa fa-check"></i> {{ $success }}</label>
-							</div>
-						@endif
-						<form role="form" class="form-horizontal">
-							<div class="form-group">
-								<label for="name" class="control-label col-sm-2">Name</label>
-								<div class="col-sm-10">
-									<input type="text" class="form-control" value="{{ Session::get('info_user_fb')->name }}" readonly disabled>
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label for="email" class="control-label col-sm-2">Email</label>
-								<div class="col-sm-10">
-									<input type="text" class="form-control" value="{{ Session::get('info_user_fb')->email }}" readonly disabled>
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label for="uid" class="control-label col-sm-2">ID</label>
-								<div class="col-sm-10">
-									<input type="text" class="form-control" value="{{ Session::get('info_user_fb')->id }}" readonly disabled>
-								</div>
-							</div>
-						</form>
-					@else
+					@if(Auth::user())
 						<form action="{{ route('login') }}" class="form-horizontal" method="post">
 						{{ csrf_field() }}
-							@if(Session::has('error'))
-								<label for="warning" class="control-label"><i class="fa fa-times-circle-o"></i> {{ Session::get('error') }}</label>
+							@if(session('error'))
+								<div class="form-group has-error">
+									<label for="warning" class="control-label col-offset-2 col-sm-2"><i class="fa fa-times-circle-o"></i> {{ session('error') }}</label>
+								</div>
 							@endif
 								<div class="form-group{{ Session::has('error') ? ' has-error' : null }}">
 									<label for="username" class="col-sm-2 control-label">Username</label>
