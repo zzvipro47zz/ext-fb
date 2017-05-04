@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use Auth, Session;
+use Illuminate\Http\Request;
 
-class HomeController extends Controller {
-	public function index() {
-		return view('dashboard');
-	}
+class HomeController extends Controller
+{
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
-	public function unfriend() {
-		return view('auto.friend.unfriend');
-	}
-
-	public function addfriend() {
-		return view('auto.friend.addfriend');
-	}
-
-	public function postWall() {
-		return view('auto.wall.postWall');
-	}
-
-	public function group() {
-		return view('auto.group');
-	}
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return view('home');
+    }
 }

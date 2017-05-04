@@ -20,9 +20,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 });
 
 // HomeController để lấy view hiển thị
-Route::post('/login', ['uses' => 'SocialController@login_facebook', 'as' => 'login']);
 // group này chỉ hiển thị khi user đã được đăng nhập vào hệ thống
-Route::group(['middleware' => 'auth', 'prefix' => 'facebook'], function() {
+Route::group(['prefix' => 'facebook'], function() {
+	Route::post('/login', ['uses' => 'SocialController@login_facebook', 'as' => 'fb.login']);
+
 	Route::get('/{un}friend', 'Facebook\WallController@getFriends');
 	Route::get('/{add}friend', 'Facebook\WallController@getFriends');
 
@@ -33,7 +34,10 @@ Route::group(['middleware' => 'auth', 'prefix' => 'facebook'], function() {
 	Route::post('/group', 'FacebookController@postGroup');
 });
 
+
+Route::get('/', ['uses' => 'ViewController@index', 'as' => 'index']);
+Route::get('/home', ['uses' => 'ViewController@index', 'as' => 'index']);
+
 Route::get('/logout' , 'Auth\LoginController@logout');
 
-Route::get('/', ['uses' => 'HomeController@index', 'as' => 'index']);
-Route::get('/dashboard', ['uses' => 'HomeController@index', 'as' => 'index']);
+Auth::routes();
