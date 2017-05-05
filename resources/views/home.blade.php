@@ -120,11 +120,11 @@
 						</div>
 					</div>
 					<div class="box-body">
-						<form action="{{ route('login') }}" class="form-horizontal" method="post">
+						<form action="{{ route('fb.login') }}" class="form-horizontal" method="post">
 						{{ csrf_field() }}
 							@if(session('error'))
 								<div class="form-group has-error">
-									<label for="warning" class="control-label col-offset-2 col-sm-2"><i class="fa fa-times-circle-o"></i> {{ session('error') }}</label>
+									<label for="warning" class="control-label col-md-offset-2 col-md-10"><i class="fa fa-times-circle-o"></i> {{ session('error') }}</label>
 								</div>
 							@endif
 								<div class="form-group{{ Session::has('error') ? ' has-error' : null }}">
