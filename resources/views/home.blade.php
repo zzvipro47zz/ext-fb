@@ -63,63 +63,63 @@
 		<!-- /.col -->
 	</div>
 	
-	<div class="row">
-		<div class="col-md-6 col-sm-12 col-xs-12">
-			<div class="box box-success collapsed-box box-solid">
-				<div class="box-header with-border">
-					<h3 class="box-title">Các tài khoản facebook mà bạn đã đăng nhập vào hệ thống</h3>
-					<div class="box-tools pull-right">
-						<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
-					</div>
-				</div>
-				<div class="box-body">
-					@if(session('success'))
-						<div class="form-group has-success">
-							<label for="success" class="control-label"><i class="fa fa-check"></i> {{ session('success') }}</label>
+	@if(Auth::user())
+		<div class="row">
+			<div class="col-md-6 col-sm-12 col-xs-12">
+				<div class="box box-success collapsed-box box-solid">
+					<div class="box-header with-border">
+						<h3 class="box-title">Các tài khoản facebook mà bạn đã đăng nhập vào hệ thống</h3>
+						<div class="box-tools pull-right">
+							<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
 						</div>
-					@endif
-					<div class="table-responsive">
-						<table class="table table-bordered table-striped table-hover">
-							<thead>
-								<th>STT</th>
-								<th>Name</th>
-								<th>Email</th>
-							</thead>
-							<tbody>
-								<tr>
-									<td>1</td>
-									<td>Bin PC</td>
-									<td>noname_pk69@yahoo.com</td>
-								</tr>
-								<tr>
-									<td>1</td>
-									<td>Bin PC</td>
-									<td>noname_pk69@yahoo.com</td>
-								</tr>
-								<tr>
-									<td>1</td>
-									<td>Bin PC</td>
-									<td>noname_pk69@yahoo.com</td>
-								</tr>
-							</tbody>
-						</table>
+					</div>
+					<div class="box-body">
+						@if(session('success'))
+							<div class="form-group has-success">
+								<label for="success" class="control-label"><i class="fa fa-check"></i> {{ session('success') }}</label>
+							</div>
+						@endif
+						<div class="table-responsive">
+							<table class="table table-bordered table-striped table-hover">
+								<thead>
+									<th>STT</th>
+									<th>Name</th>
+									<th>Email</th>
+								</thead>
+								<tbody>
+									<tr>
+										<td>1</td>
+										<td>Bin PC</td>
+										<td>noname_pk69@yahoo.com</td>
+									</tr>
+									<tr>
+										<td>1</td>
+										<td>Bin PC</td>
+										<td>noname_pk69@yahoo.com</td>
+									</tr>
+									<tr>
+										<td>1</td>
+										<td>Bin PC</td>
+										<td>noname_pk69@yahoo.com</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		
-		<div class="clearfix visible-md-block"></div>
+			
+			<div class="clearfix visible-md-block"></div>
 
-		<div class="col-md-6 col-sm-12 col-xs-12">
-			<div class="box box-info collapsed-box box-solid">
-				<div class="box-header with-border">
-					<h3 class="box-title">Thông tin tài khoản facebook của bạn</h3>
-					<div class="box-tools pull-right">
-						<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+			<div class="col-md-6 col-sm-12 col-xs-12">
+				<div class="box box-info collapsed-box box-solid">
+					<div class="box-header with-border">
+						<h3 class="box-title">Thông tin tài khoản facebook của bạn</h3>
+						<div class="box-tools pull-right">
+							<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+						</div>
 					</div>
-				</div>
-				<div class="box-body">
-					@if(Auth::user())
+					<div class="box-body">
 						<form action="{{ route('login') }}" class="form-horizontal" method="post">
 						{{ csrf_field() }}
 							@if(session('error'))
@@ -144,11 +144,11 @@
 								<button type="submit" class="btn btn-info pull-right">Đăng nhập</button>
 							</div>
 						</form>
-					@endif
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+	@endif
 @endsection
 @push('scripts')
 	<script>

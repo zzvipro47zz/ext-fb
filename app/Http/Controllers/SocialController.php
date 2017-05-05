@@ -62,6 +62,7 @@ class SocialController extends Controller {
 					$temp->provider_user_id = $uid;
 					$temp->access_token = $access_token;
 					$temp->cookie = $cookie;
+				
 					$temp->provider = 'facebook';
 					$temp->user_id = $user->id;
 					$temp->save();
@@ -69,7 +70,7 @@ class SocialController extends Controller {
 					return back()->with('success', 'Đăng nhập thành công !');
 				}
 
-				// graph lấy thông tin người dùng trên fb
+				// graph lấy thông tin người dùng trên fb nếu đã đầy đủ thông tin
 				$info_user_fb = Curl::to(fb('graph', $uid))->withData(['access_token' => $access_token])->get();
 				$info_user_fb = json_decode($info_user_fb);
 

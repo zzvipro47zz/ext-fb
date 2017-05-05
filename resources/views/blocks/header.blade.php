@@ -54,7 +54,7 @@
 						</ul>
 					</li>
 				@else
-					<li><a href="{{ route('fb.login') }}"><i class="fa fa-sign-in" aria-hidden="true"></i> Đăng nhập vào hệ thống auto</a></li>
+					<li><a href="/login"><i class="fa fa-sign-in" aria-hidden="true"></i> Đăng nhập vào hệ thống auto</a></li>
 				@endif
 			</ul>
 		</div>
