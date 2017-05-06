@@ -8,6 +8,7 @@ use Curl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class SocialController extends Controller {
 	public function login_facebook(Request $request) {
@@ -38,9 +39,9 @@ class SocialController extends Controller {
 				$name = $info_user_fb->name;
 
 				// nếu đã có tài khoản trước đó thì thêm thông tin bị thiếu (email or phone)
-				$social_user_id = Social::where('provider_uid', $uid)->first();
-				if ($social_user_id) {
-					$request()->session()->put($social->provider_uid, $social);
+				$social = Social::where('provider_uid', $uid)->first();
+				if ($social) {
+					Session::put($social->email, $social);
 
 					return back()->with('success', 'Đăng nhập thành công !');
 				} else {
@@ -66,13 +67,10 @@ class SocialController extends Controller {
 					$social->user_id = Auth::user()->id;
 					$social->save();
 
-					$request()->session()->put($uid, $social);
+					Session::put($request->username, $social);
 
 					return back()->with('success', 'Thêm tài khoản facebook vào hệ thống thành công !');
 				}
-
-				// save session
-				$request()->session()->put($uid, $info_user_fb);
 			} else {
 				return back()->with('error', 'Wrong username or password !');
 			}

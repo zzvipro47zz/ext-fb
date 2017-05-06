@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Social;
+use Illuminate\Support\Facades\Auth;
+
 class ViewController extends Controller {
 	public function index() {
-		return view('home');
+		$socials = Social::where('user_id', Auth::user()->id)->get()->toArray();
+
+		return view('home', compact('socials'));
 	}
 
 	public function unfriend() {
