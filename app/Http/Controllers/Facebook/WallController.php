@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Curl;
 use Illuminate\Http\Request;
 use Session;
+use Illuminate\Support\Facades\Auth;
+use App\Social;
 
 class WallController extends Controller {
 	public function __construct() {
@@ -17,15 +19,15 @@ class WallController extends Controller {
 
 	}
 
-	public function getFriends($relative_url) {
-		$info = Session::get('info_user_fb');
-		$graph_friends = Curl::to(fb('graph', $info->id . '/friends'))->withData(['access_token' => $info->access_token])->get();
-		$graph_friends = json_decode($graph_friends);
+	public function getFriends() {
+		$users = Social::where('user_id', Auth::user()->id)->get()->toArray();
+		$graph_friends = Curl::to(fb('graph', $info->id . '/friends'))->withData(['access_token' => $users->access_token])->get();
+		// $graph_friends = json_decode($graph_friends);
 
-		$total_count = count($graph_friends->data);
-		$friends = $graph_friends->data;
+		// $total_count = count($graph_friends->data);
+		// $friends = $graph_friends->data;
 
-		return view('auto.friend.' . $relative_url . 'friend', compact('friends', 'total_count'));
+		return view('auto.friends');
 	}
 
 	public function postWall(Request $request) {

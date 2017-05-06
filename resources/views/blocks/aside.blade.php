@@ -5,21 +5,14 @@
 		<ul class="sidebar-menu">
 			<li class="header">MAIN TOOLS</li>
 			<li class="active treeview">
-				<a href="{{ url('dashboard') }}">
+				<a href="./">
 					<i class="fa fa-dashboard"></i> <span>Dashboard</span>
 				</a>
 			</li>
 			<li class="treeview">
-				<a href="#">
-					<i class="fa fa-user-circle" aria-hidden="true"></i> <span>Friend</span>
-					<span class="pull-right-container">
-						<i class="fa fa-angle-left pull-right"></i>
-					</span>
+				<a href="{{ route('fb.friends') }}">
+					<i class="fa fa-user-circle" aria-hidden="true"></i> <span>Friends</span>
 				</a>
-				<ul class="treeview-menu">
-					<li><a href="{{ url('facebook/unfriend') }}"><i class="fa fa-user-times"></i> UnFriend</a></li>
-					<li><a href="{{ url('facebook/addfriend') }}"><i class="fa fa-user-plus"></i> Add Friend</a></li>
-				</ul>
 			</li>
 
 			<li class="treeview">

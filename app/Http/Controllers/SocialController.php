@@ -12,13 +12,11 @@ use Illuminate\Support\Facades\Session;
 
 class SocialController extends Controller {
 	public function login_facebook(Request $request) {
-		// nếu có tài khoản facebook trong hệ thống thì thêm vào user
+		// nếu có tài khoản facebook trong hệ thống thì check
 		$social = Social::where('email', $request->username)->orWhere('phone', $request->username)->first();
 		if ($social) { // nếu đã có tk facebook thì kiểm tra pass
 			if (Hash::check($request->password, $social->password)) {
-				$request->session()->put($social->provider_uid, $social);
-
-				return back()->with('success', 'Đăng nhập thành công !');
+				return back()->with('success', 'Tài khoản bạn vừa nhập đã có trong hệ thống !');
 			}
 			return back()->with('error', 'Bạn đã nhập sai pass facebook !');
 		} else { // không có tk fb trong hệ thống hoặc kiểm tra email và phone
@@ -41,8 +39,6 @@ class SocialController extends Controller {
 				// nếu đã có tài khoản trước đó thì thêm thông tin bị thiếu (email or phone)
 				$social = Social::where('provider_uid', $uid)->first();
 				if ($social) {
-					Session::put($social->email, $social);
-
 					return back()->with('success', 'Đăng nhập thành công !');
 				} else {
 					// chuyển đổi cookie. okay !
@@ -66,8 +62,6 @@ class SocialController extends Controller {
 					$social->provider = 'facebook';
 					$social->user_id = Auth::user()->id;
 					$social->save();
-
-					Session::put($request->username, $social);
 
 					return back()->with('success', 'Thêm tài khoản facebook vào hệ thống thành công !');
 				}

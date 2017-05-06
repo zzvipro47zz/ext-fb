@@ -12,12 +12,10 @@ class ViewController extends Controller {
 		return view('home', compact('socials'));
 	}
 
-	public function unfriend() {
-		return view('auto.friend.unfriend');
-	}
+	public function getInfoUsers() {
+		$users = Social::where('user_id', Auth::user()->id)->get()->toArray();
 
-	public function addfriend() {
-		return view('auto.friend.addfriend');
+		return view('auto.friends', compact('users'));
 	}
 
 	public function postWall() {
