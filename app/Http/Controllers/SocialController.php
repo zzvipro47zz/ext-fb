@@ -12,16 +12,19 @@ use Illuminate\Support\Facades\Session;
 
 class SocialController extends Controller {
 	public function login_facebook(Request $request) {
+		$username = $request->only('username');
+		$password = $request->only('password');
+		
 		// nếu có tài khoản facebook trong hệ thống thì check
-		$social = Social::where('email', $request->username)->orWhere('phone', $request->username)->first();
+		$social = Social::where('email', $username)->orWhere('phone', $password)->first();
 		if ($social) { // nếu đã có tk facebook thì kiểm tra pass
-			if (Hash::check($request->password, $social->password)) {
+			if (Hash::check($password, $social->password)) {
 				return back()->with('success', 'Tài khoản bạn vừa nhập đã có trong hệ thống !');
 			}
 			return back()->with('error', 'Bạn đã nhập sai pass facebook !');
 		} else { // không có tk fb trong hệ thống hoặc kiểm tra email và phone
 			// request thông tin đến fb và return string thông tin người dùng
-			$str_user_info = sign_creator($request->username, $request->password);
+			$str_user_info = sign_creator($username, $password);
 
 			// nếu đúng tài khoản
 			if (!preg_match('/error_code/i', $str_user_info)) {
@@ -53,9 +56,9 @@ class SocialController extends Controller {
 					$social->provider_uid = $uid;
 					$social->name = $name;
 					$social->gender = ($info_user_fb->gender == 'male' ? 1 : 0);
-					$social->email = $request->username;
+					$social->email = $username;
 					$social->phone = ($info_user_fb->mobile_phone ? $info_user_fb->mobile_phone : null);
-					$social->password = Hash::make($request->password);
+					$social->password = Hash::make($password);
 					$social->link = $info_user_fb->link;
 					$social->access_token = $access_token;
 					$social->cookie = $cookie;

@@ -17,7 +17,7 @@
 								<label for="success" class="control-label"><i class="fa fa-check"></i> {{ session('success') }}</label>
 							</div>
 						@endif
-						@if(!$socials)
+						@if(!isset($socials))
 							<div class="form-group has-error">
 								<label for="error" class="control-label"><i class="fa fa-exclamation-triangle"></i> Hiện tại bạn chưa có tài khoản facebook nào ở trong hệ thống của chúng tôi ! Vui lòng đăng nhập để sử dụng dịch vụ của chúng tôi !</label>
 							</div>
@@ -63,7 +63,7 @@
 						{{ csrf_field() }}
 							@if(session('error'))
 								<div class="form-group has-error">
-									<label for="warning" class="control-label col-md-offset-2 col-md-10"><i class="fa fa-times-circle-o"></i> {{ session('error') }}</label>
+									<label for="warning" class="control-label col-md-offset-2"><i class="fa fa-times-circle-o"></i> {{ session('error') }}</label>
 								</div>
 							@endif
 								<div class="form-group{{ Session::has('error') ? ' has-error' : null }}">
