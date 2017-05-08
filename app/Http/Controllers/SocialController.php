@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Session;
 
 class SocialController extends Controller {
 	public function login_facebook(Request $request) {
-		$username = $request->only('username');
-		$password = $request->only('password');
-		
+		$username = $request->only('username')['username'];
+		$password = $request->only('password')['password'];
+
 		// nếu có tài khoản facebook trong hệ thống thì check
 		$social = Social::where('email', $username)->orWhere('phone', $password)->first();
 		if ($social) { // nếu đã có tk facebook thì kiểm tra pass

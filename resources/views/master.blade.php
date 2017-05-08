@@ -81,8 +81,16 @@
 	<script src="{{ asset('js/table.js') }}"></script>
 	<script src="{{ asset('js/checkbox.js') }}"></script>
 	
-	@stack('scripts')
+	<script>
+		if ($('.del')) {
+			setTimeout(function() {
+				$('.del').fadeOut('slow', function() {
+					$(this).remove();
+				});
+			}, 5000);
+		}
+	</script>
 
-	{{-- <script src="{{ asset('js/myjs.js') }}"></script> --}}
+	@stack('scripts')
 </body>
 </html>

@@ -21,10 +21,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
 // HomeController để lấy view hiển thị
 // group này chỉ hiển thị khi user đã được đăng nhập vào hệ thống
+// name(tên) nào mà không có từ get ở đầu nghĩa là chỉ lấy trang view
 Route::group(['prefix' => 'facebook'], function() {
 	Route::post('/login', ['uses' => 'SocialController@login_facebook', 'as' => 'fb.login']);
 
 	Route::get('/friends', 'ViewController@getFriends')->name('fb.friends');
+	Route::get('/{uid}/friends', 'ViewController@ajax_getFriends')->name('fb.getFriends');
 
 	Route::get('postWall', 'HomeController@postWall');
 	Route::post('wall', 'Facebook\WallController@postWall');

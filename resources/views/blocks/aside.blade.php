@@ -5,7 +5,7 @@
 		<ul class="sidebar-menu">
 			<li class="header">MAIN TOOLS</li>
 			<li class="active treeview">
-				<a href="./">
+				<a href="/">
 					<i class="fa fa-dashboard"></i> <span>Dashboard</span>
 				</a>
 			</li>

@@ -15,9 +15,9 @@ class CreateSocialsTable extends Migration {
 			$table->increments('id');
 			$table->string('provider_uid', 20);
 			$table->string('name');
-			$table->unsignedTinyInteger('gender')->comment('0: Nữ - 1: Nam');
 			$table->string('email')->nullable();
 			$table->string('phone')->nullable();
+			$table->unsignedTinyInteger('gender')->comment('0: Nữ - 1: Nam');
 			$table->string('password');
 			$table->string('link');
 			$table->UnsignedInteger('likes')->default(0);

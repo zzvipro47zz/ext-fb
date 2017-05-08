@@ -17,7 +17,7 @@
 								<label for="success" class="control-label"><i class="fa fa-check"></i> {{ session('success') }}</label>
 							</div>
 						@endif
-						@if(!isset($socials))
+						@if(empty($socials))
 							<div class="form-group has-error">
 								<label for="error" class="control-label"><i class="fa fa-exclamation-triangle"></i> Hiện tại bạn chưa có tài khoản facebook nào ở trong hệ thống của chúng tôi ! Vui lòng đăng nhập để sử dụng dịch vụ của chúng tôi !</label>
 							</div>
@@ -40,7 +40,7 @@
 									</tbody>
 								</table>
 								<div class="form-group has-success">
-									<label class="control-label"><i class="fa fa-check"></i> Password facebook của các bạn đã được mã hóa !</label>
+									<label class="control-label"><i class="fa fa-check"></i> Password facebook của bạn đã được mã hóa !</label>
 								</div>
 							</div>
 						@endif
@@ -89,14 +89,3 @@
 		</div>
 	@endif
 @endsection
-@push('scripts')
-	<script>
-		if ($('.del')) {
-			setTimeout(function() {
-				$('.del').fadeOut('slow', function() {
-					$(this).remove();
-				});
-			}, 5000);
-		}
-	</script>
-@endpush
