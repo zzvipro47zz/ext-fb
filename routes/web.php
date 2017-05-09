@@ -25,8 +25,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 Route::group(['prefix' => 'facebook'], function() {
 	Route::post('/login', ['uses' => 'SocialController@login_facebook', 'as' => 'fb.login']);
 
-	Route::get('/friends', 'ViewController@getFriends')->name('fb.friends');
-	Route::get('/{uid}/friends', 'ViewController@ajax_getFriends')->name('fb.getFriends');
+	Route::get('/friends', 'ViewController@friends')->name('fb.friends');
+	Route::post('/friends', 'Facebook\WallController@getFriends')->name('fb.getFriends');
 
 	Route::get('postWall', 'HomeController@postWall');
 	Route::post('wall', 'Facebook\WallController@postWall');

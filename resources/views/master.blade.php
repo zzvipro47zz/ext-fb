@@ -35,29 +35,31 @@
 	</script>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
-	@include('blocks.header')
+	<div class="wrapper">
+		@include('blocks.header')
 
-	@include('blocks.aside')
+		@include('blocks.aside')
 
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<section class="content-header">
+				<h1>@yield('page')</h1>
+			</section>
 
+			<!-- Main content -->
+			<section class="content">
+				@yield('page-content')
+			</section>
+			<!-- /.content -->
+		</div>
 
-
-	<div class="content-wrapper">
-		<!-- Content Header (Page header) -->
-		<section class="content-header">
-			<h1>@yield('page')</h1>
-		</section>
-
-		<!-- Main content -->
-		<section class="content">
-			@yield('page-content')
-		</section>
-		<!-- /.content -->
+		<footer class="main-footer">
+			<div class="pull-right hidden-xs">
+				<b>Version</b> 1.0.0
+			</div>
+			<strong>Copyright &copy; 2017-2018 <a href="http://fb.com/100011795260650">Bin PC</a>.</strong> All rights reserved.
+		</footer>
 	</div>
-
-
-
-
 
 	<!-- jQuery 2.2.3 -->
 	<script src="{{ asset('libs/adminlte-2.3.11/plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
@@ -80,16 +82,7 @@
 	<!-- my js -->
 	<script src="{{ asset('js/table.js') }}"></script>
 	<script src="{{ asset('js/checkbox.js') }}"></script>
-	
-	<script>
-		if ($('.del')) {
-			setTimeout(function() {
-				$('.del').fadeOut('slow', function() {
-					$(this).remove();
-				});
-			}, 5000);
-		}
-	</script>
+	<script src="{{ asset('js/ready.js') }}"></script>
 
 	@stack('scripts')
 </body>

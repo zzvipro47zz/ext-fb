@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Social;
+use Curl;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ViewController extends Controller {
@@ -16,22 +18,10 @@ class ViewController extends Controller {
 		return view('home', compact('socials'));
 	}
 
-	public function getFriends() {
+	public function friends() {
 		$users = Social::where('user_id', Auth::user()->id)->get()->toArray();
 
 		return view('auto.friends', compact('users'));
-	}
-
-	public function ajax_getFriends($uid) {
-		if ($request->ajax()) {
-			$user = Social::where('provider_uid', $uid)->get()->toArray();
-
-			$friends = Curl::to(fb('graph', $uid.'/friends'))->withData(['access_token' => $user['access_token']])->get();
-			echo $friends;
-
-			return 'okay';
-		}
-		return route('fb.friends');
 	}
 
 	public function getInfoUsers() {

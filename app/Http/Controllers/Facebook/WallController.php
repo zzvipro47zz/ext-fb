@@ -19,15 +19,18 @@ class WallController extends Controller {
 
 	}
 
-	public function getFriends() {
+	public function getFriends(Request $request) {
+		$uid = $request->only('user')['user'];
+
 		$users = Social::where('user_id', Auth::user()->id)->get()->toArray();
-		$graph_friends = Curl::to(fb('graph', $info->id . '/friends'))->withData(['access_token' => $users->access_token])->get();
-		// $graph_friends = json_decode($graph_friends);
 
-		// $total_count = count($graph_friends->data);
-		// $friends = $graph_friends->data;
+		// $user dùng để lấy user đã được chọn để get friend
+		$user = Social::where('provider_uid', $uid)->get()->first()->toArray();
 
-		return view('auto.friends');
+		$str_friends = Curl::to(fb('graph', $uid . '/friends'))->withData(['access_token' => $user['access_token']])->get();
+		$friends = json_decode($str_friends)->data;
+
+		return view('auto.friends')->with(['users' => $users, 'friends' => $friends]);
 	}
 
 	public function postWall(Request $request) {

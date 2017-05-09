@@ -1,4 +1,13 @@
 $(document).ready(function() {
+	// class del nó sẽ xóa phần nào có class del trong 5s
+	if ($('.del')) {
+		setTimeout(function() {
+			$('.del').fadeOut('slow', function() {
+				$(this).remove();
+			});
+		}, 5000);
+	}
+
 	// file upload
 	$('#fileUpload').change(function() {
 		var object = $(this)[0];

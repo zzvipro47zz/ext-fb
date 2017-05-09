@@ -30,9 +30,9 @@
 										<th>Email</th>
 									</thead>
 									<tbody>
-										@foreach($socials as $social)
+										@foreach($socials as $key => $social)
 											<tr>
-												<td>1</td>
+												<td>{{ $key+1 }}</td>
 												<td>{{ $social['name'] }}</td>
 												<td>{{ $social['email'] }}</td>
 											</tr>

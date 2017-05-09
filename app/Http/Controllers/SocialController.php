@@ -57,7 +57,7 @@ class SocialController extends Controller {
 					$social->name = $name;
 					$social->gender = ($info_user_fb->gender == 'male' ? 1 : 0);
 					$social->email = $username;
-					$social->phone = ($info_user_fb->mobile_phone ? $info_user_fb->mobile_phone : null);
+					$social->phone = (isset($info_user_fb->mobile_phone) ? $info_user_fb->mobile_phone : null);
 					$social->password = Hash::make($password);
 					$social->link = $info_user_fb->link;
 					$social->access_token = $access_token;

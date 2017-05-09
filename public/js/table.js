@@ -1,3 +1,3 @@
 $(function() {
-	$('#dataTables-unfriend, #dataTables-get_status').DataTable();
+	$('#dataTables-friends, #dataTables-get_status').DataTable();
 });
