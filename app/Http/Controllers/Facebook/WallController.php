@@ -19,9 +19,7 @@ class WallController extends Controller {
 
 	}
 
-	public function getFriends(Request $request) {
-		$uid = $request->only('user')['user'];
-
+	public function getFriends(Request $request, $uid) {
 		$users = Social::where('user_id', Auth::user()->id)->get()->toArray();
 
 		// $user dùng để lấy user đã được chọn để get friend
@@ -31,6 +29,28 @@ class WallController extends Controller {
 		$friends = json_decode($str_friends)->data;
 
 		return view('auto.friends')->with(['users' => $users, 'friends' => $friends]);
+	}
+
+	public function unfriend($uid, $id) {
+		$user = Social::where('provider_uid', $uid)->get()->first()->toArray();
+
+		$get_fb_dtsg = Curl::to(fb('mbasic', '/'))
+			// ->withData(['friend_id='.$id, 'unref=profile_gear', 'refid=8'])
+			->withHeaders(['cookie: '.$user['cookie']])
+			->get();
+		dd($get_fb_dtsg);
+
+		$unfriend = Curl::to(fb('mbasic', 'a/removefriend.php'))
+			->withData([
+				'access_token' => $user['access_token'],
+				'friend_id' => $id,
+				'unref' => 'profile_gear',
+				'fb_dtsg' => 'AQC4AoV0',
+				'confirm' => 'Confirmer'
+			])->get();
+
+		dd($unfriend);
+		return;
 	}
 
 	public function postWall(Request $request) {

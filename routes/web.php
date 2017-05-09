@@ -26,7 +26,9 @@ Route::group(['prefix' => 'facebook'], function() {
 	Route::post('/login', ['uses' => 'SocialController@login_facebook', 'as' => 'fb.login']);
 
 	Route::get('/friends', 'ViewController@friends')->name('fb.friends');
-	Route::post('/friends', 'Facebook\WallController@getFriends')->name('fb.getFriends');
+	Route::get('{uid}/friends', 'Facebook\WallController@getFriends')->name('fb.getFriends');
+
+	Route::get('{uid}/{idfriend}/unfriend', 'Facebook\WallController@unfriend')->name('fb.unfriend');
 
 	Route::get('postWall', 'HomeController@postWall');
 	Route::post('wall', 'Facebook\WallController@postWall');
