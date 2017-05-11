@@ -24,10 +24,10 @@ class ViewController extends Controller {
 		return view('auto.friends', compact('users'));
 	}
 
-	public function getInfoUsers() {
+	public function getStatus() {
 		$users = Social::where('user_id', Auth::user()->id)->get()->toArray();
 
-		return view('auto.friends', compact('users'));
+		return view('auto.wall.getstatus', compact('users'));
 	}
 
 	public function postWall() {

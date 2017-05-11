@@ -6,7 +6,8 @@
 	<!-- CSRF Token -->
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 
-	<title>Facebook Tools</title>
+	<title>Social Tools</title>
+	
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	<!-- Bootstrap 3.3.6 -->
@@ -53,12 +54,7 @@
 			<!-- /.content -->
 		</div>
 
-		<footer class="main-footer">
-			<div class="pull-right hidden-xs">
-				<b>Version</b> 1.0.0
-			</div>
-			<strong>Copyright &copy; 2017-2018 <a href="http://fb.com/100011795260650">Bin PC</a>.</strong> All rights reserved.
-		</footer>
+		@include('blocks.footer')
 	</div>
 
 	<!-- jQuery 2.2.3 -->

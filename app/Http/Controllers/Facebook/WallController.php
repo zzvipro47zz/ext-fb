@@ -3,23 +3,18 @@
 namespace App\Http\Controllers\Facebook;
 
 use App\Http\Controllers\Controller;
+use App\Social;
 use Curl;
 use Illuminate\Http\Request;
-use Session;
 use Illuminate\Support\Facades\Auth;
-use App\Social;
+use Session;
 
 class WallController extends Controller {
 	public function __construct() {
 		$this->middleware('auth');
 	}
 
-	public function getStatuses() {
-		$feed = Curl::to(fb('graph', 'me/feed'));
-
-	}
-
-	public function getFriends(Request $request, $uid) {
+	public function getFriends($uid) {
 		$users = Social::where('user_id', Auth::user()->id)->get()->toArray();
 
 		// $user dùng để lấy user đã được chọn để get friend
@@ -33,27 +28,29 @@ class WallController extends Controller {
 
 	public function unfriend($uid, $id) {
 		$user = Social::where('provider_uid', $uid)->get()->first()->toArray();
+		$cookie = $user['cookie'];
 
-		$get_fb_dtsg = Curl::to(fb('mbasic', '/'))
-			// ->withData(['friend_id='.$id, 'unref=profile_gear', 'refid=8'])
-			->withHeaders(['cookie: '.$user['cookie']])
-			->get();
-		dd($get_fb_dtsg);
+		$get_data = CurlToFBWithCookie(fb('mbasic', 'removefriend.php?friend_id=' . $id), $cookie);
+		preg_match('/fb_dtsg" value="(.+?)"/i', $get_data, $fb_dtsg);
+		$post_fields = [
+			'friend_id' => $id,
+			'fb_dtsg' => $fb_dtsg[1],
+			'unref' => 'profile_gear',
+			'confirm' => 'Confirmer',
+		];
+		$unfriend = CurlToFBWithCookie(fb('mbasic', 'a/removefriend.php'), $cookie, $post_fields);
 
-		$unfriend = Curl::to(fb('mbasic', 'a/removefriend.php'))
-			->withData([
-				'access_token' => $user['access_token'],
-				'friend_id' => $id,
-				'unref' => 'profile_gear',
-				'fb_dtsg' => 'AQC4AoV0',
-				'confirm' => 'Confirmer'
-			])->get();
-
-		dd($unfriend);
-		return;
+		return back()->with('success', 'Hủy kết bạn thành công !');
 	}
 
-	public function postWall(Request $request) {
+	public function getStatus($uid) {
+		$user = Social::where('provider_uid', $uid)->get()->first()->toArray();
+		$feed = Curl::to(fb('graph', 'me/feed'))->withData(['access_token' => $user['access_token']])->get();
+
+		return view('auto.wall.getstatus', compact('feed'));
+	}
+
+	public function postStatus(Request $request) {
 		$this->validate($request, [
 			'image' => 'image|mimes:jpg,png,jpeg',
 		]);

@@ -24,7 +24,8 @@
 					</span>
 				</a>
 				<ul class="treeview-menu">
-					<li><a href="{{ url('facebook/wall') }}"><i class="fa fa-circle-o"></i> Đăng stt</a></li>
+					<li><a href="{{ route('fb.wall.stt') }}"><i class="fa fa-circle-o"></i> Những bài viết bạn đã đăng</a></li>
+					<li><a href="{{ url('facebook/poststatus') }}"><i class="fa fa-circle-o"></i> Đăng bài lên tường nhà</a></li>
 				</ul>
 			</li>
 
