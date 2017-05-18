@@ -24,10 +24,13 @@
 	<link rel="stylesheet" href="{{ asset('libs/adminlte-2.3.11/dist/css/AdminLTE.min.css') }}">
 	<!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
 	<link rel="stylesheet" href="{{ asset('libs/adminlte-2.3.11/dist/css/skins/_all-skins.min.css') }}">
+	@stack('libs-css')
 
 	{{-- my css --}}
-	<link href="{{ asset('css/send_sms.css') }}" rel="stylesheet">
+	<link rel="stylesheet" href="{{ asset('css/scrolltop.css') }}">
 
+	<link rel="stylesheet" href="{{ asset('css/send_sms.css') }}">
+	
 	<!-- Scripts -->
 	<script>
 		window.Laravel = {!! json_encode([
@@ -54,8 +57,11 @@
 			<!-- /.content -->
 		</div>
 
+		<a href="#" id="scroll_to_top" class="btn btn-default btn-circle"></a>
+
 		@include('blocks.footer')
 	</div>
+
 
 	<!-- jQuery 2.2.3 -->
 	<script src="{{ asset('libs/adminlte-2.3.11/plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
@@ -75,6 +81,8 @@
 	<script src="{{ asset('libs/adminlte-2.3.11/plugins/jvectormap/jquery-jvectormap-world-mill-en.js') }}"></script>
 	<!-- SlimScroll 1.3.0 -->
 	<script src="{{ asset('libs/adminlte-2.3.11/plugins/slimScroll/jquery.slimscroll.min.js') }}"></script>
+	@stack('libs-scripts')
+
 	<!-- my js -->
 	<script src="{{ asset('js/table.js') }}"></script>
 	<script src="{{ asset('js/checkbox.js') }}"></script>

@@ -1,16 +1,5 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
- */
-
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 	Route::delete('/user/{id}', 'UserController@delete');
 	Route::get('/user', ['uses' => 'AdminController@user', 'as' => 'admin.user']);
@@ -19,23 +8,21 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 	Route::get('/', 'AdminController@index');
 });
 
-// HomeController để lấy view hiển thị
 // group này chỉ hiển thị khi user đã được đăng nhập vào hệ thống
 // name(tên) nào mà không có từ get ở đầu nghĩa là chỉ lấy trang view
-// url không có tham số đều là ViewController
-Route::group(['prefix' => 'facebook'], function() {
-	Route::get('{uid}/friends', 'Facebook\WallController@getFriends')->name('fb.getFriends');
-	Route::get('{uid}/{idfriend}/unfriend', 'Facebook\WallController@unfriend')->name('fb.unfriend');
-	Route::get('/friends', 'ViewController@friends')->name('fb.friends');
-
-
-	Route::group(['prefix' => 'wall'], function() {
-		Route::get('/poststatus', 'Facebook\WallController@postStatus');
-		Route::get('/getstatus', 'ViewController@getStatus')->name('fb.wall.stt');
-		Route::get('/getstatus/{uid}', 'Facebook\WallController@getStatus')->name('fb.wall.getstt');
+Route::group(['prefix' => 'facebook', 'middleware' => 'auth'], function () {
+	Route::group(['namespace' => 'Facebook', 'prefix' => 'friends'], function () {
+		Route::get('/{uid?}/{idUnfriend?}', 'FriendsController@friends')->where(['id' => '[0-9]+', 'idUnfriend' => '[0-9]+'])->name('fb.friends');
+		Route::post('{uid}/ufl', 'FriendsController@unfriend_from_list')->name('fb.ufl'); // ufl <=> unfriend_from_list
 	});
 
-	Route::group(['prefix' => 'group'], function() {
+	Route::group(['namespace' => 'Facebook', 'prefix' => 'status'], function () {
+		Route::get('/{uid?}', 'WallController@getStatus')->name('fb.stt')->where('uid', '[0-9]+');
+		Route::post('/{uid}/lmp', 'WallController@Ajax_LoadMorePost')->name('fb.stt.lmp')->where('uid', '[0-9]+'); // lmp <=> load more post
+		Route::get('/poststatus/{uid?}', 'WallController@postStatus')->name('fb.stt.poststt')->where('uid', '[0-9]+');
+	});
+
+	Route::group(['namespace' => 'Facebook', 'prefix' => 'group'], function () {
 		Route::get('/group', 'HomeController@group');
 		Route::post('/group', 'FacebookController@postGroup');
 	});
@@ -43,10 +30,9 @@ Route::group(['prefix' => 'facebook'], function() {
 	Route::post('/login', ['uses' => 'SocialController@login_facebook', 'as' => 'fb.login']);
 });
 
+Route::get('/', ['uses' => 'HomeController@index', 'as' => 'index']);
+Route::get('/home', ['uses' => 'HomeController@index', 'as' => 'index']);
 
-Route::get('/', ['uses' => 'ViewController@index', 'as' => 'index']);
-Route::get('/home', ['uses' => 'ViewController@index', 'as' => 'index']);
-
-Route::get('/logout' , 'Auth\LoginController@logout');
+Route::get('/logout', 'Auth\LoginController@logout');
 
 Auth::routes();

@@ -4,6 +4,11 @@
 	@if(Auth::user())
 		<div class="row">
 			<div class="col-md-6 col-sm-12 col-xs-12">
+				@if(session('error'))
+					<div class="form-group has-error">
+						<label for="warning" class="control-label col-md-offset-2"><i class="fa fa-times-circle-o"></i> {{ session('error') }}</label>
+					</div>
+				@endif
 				<div class="box box-success box-solid">
 					<div class="box-header with-border">
 						<h3 class="box-title">Các tài khoản facebook mà bạn đã đăng nhập vào hệ thống</h3>
@@ -60,7 +65,7 @@
 					</div>
 					<div class="box-body">
 						<form action="{{ route('fb.login') }}" class="form-horizontal" method="post">
-						{{ csrf_field() }}
+							{{ csrf_field() }}
 							@if(session('error'))
 								<div class="form-group has-error">
 									<label for="warning" class="control-label col-md-offset-2"><i class="fa fa-times-circle-o"></i> {{ session('error') }}</label>

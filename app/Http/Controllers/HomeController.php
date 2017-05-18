@@ -2,27 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Social;
+use Illuminate\Support\Facades\Auth;
 
-class HomeController extends Controller
-{
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+class HomeController extends Controller {
+	public function __construct() {
+		$this->middleware('auth');
+	}
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        return view('home');
-    }
+	public function index() {
+        $socials = Social::where('user_id', Auth::user()->id)->get()->toArray();
+        
+		return view('home', compact('socials'));
+	}
 }

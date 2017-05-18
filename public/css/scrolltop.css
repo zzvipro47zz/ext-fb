@@ -1,0 +1,20 @@
+@charset "utf-8";
+#scroll_to_top {
+	width: 40px;
+	height: 40px;
+	position: fixed;
+	bottom: 50px;
+	right: 50px;
+	display: none;
+	border: 1px solid green;
+	background-color: #fff;
+}
+
+#scroll_to_top:before {
+	font-family: FontAwesome;
+	content: "\f062";
+	z-index: -1;
+	top: 8px;
+	right: 13px;
+	position: absolute;
+}
