@@ -16,8 +16,6 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<!-- Ionicons -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-	<!-- DataTables -->
-	<link rel="stylesheet" href="{{ asset('libs/adminlte-2.3.11/plugins/datatables/dataTables.bootstrap.css') }}">
 	<!-- jvectormap -->
 	<link rel="stylesheet" href="{{ asset('libs/adminlte-2.3.11/plugins/jvectormap/jquery-jvectormap-1.2.2.css') }}">
 	<!-- Theme style -->
@@ -67,9 +65,6 @@
 	<script src="{{ asset('libs/adminlte-2.3.11/plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
 	<!-- Bootstrap 3.3.6 -->
 	<script src="{{ asset('libs/adminlte-2.3.11/bootstrap/js/bootstrap.min.js') }}"></script>
-	<!-- DataTables -->
-	<script src="{{ asset('libs/adminlte-2.3.11/plugins/datatables/jquery.dataTables.min.js') }}"></script>
-	<script src="{{ asset('libs/adminlte-2.3.11/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
 	<!-- FastClick -->
 	<script src="{{ asset('libs/adminlte-2.3.11/plugins/fastclick/fastclick.js') }}"></script>
 	<!-- AdminLTE App -->
@@ -87,6 +82,14 @@
 	<script src="{{ asset('js/table.js') }}"></script>
 	<script src="{{ asset('js/checkbox.js') }}"></script>
 	<script src="{{ asset('js/ready.js') }}"></script>
+
+	<script>
+		$.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			}
+		});
+	</script>
 
 	@stack('scripts')
 </body>

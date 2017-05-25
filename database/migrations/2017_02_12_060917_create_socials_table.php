@@ -5,15 +5,10 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 class CreateSocialsTable extends Migration {
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
 	public function up() {
 		Schema::create('socials', function (Blueprint $table) {
 			$table->increments('id');
-			$table->string('provider_uid', 20);
+			$table->string('provider_uid', 20)->unique();
 			$table->string('name');
 			$table->string('email')->nullable();
 			$table->string('phone')->nullable();
@@ -21,7 +16,7 @@ class CreateSocialsTable extends Migration {
 			$table->string('password');
 			$table->string('link');
 			$table->UnsignedInteger('likes')->default(0);
-			$table->UnsignedInteger('posts')->default(0);
+			$table->UnsignedInteger('subs')->default(0);
 			$table->string('access_token', 300);
 			$table->string('cookie', 255);
 			$table->string('provider');
@@ -31,11 +26,6 @@ class CreateSocialsTable extends Migration {
 		});
 	}
 
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
 	public function down() {
 		Schema::dropIfExists('socials');
 	}

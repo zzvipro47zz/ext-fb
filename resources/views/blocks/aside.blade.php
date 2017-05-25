@@ -10,7 +10,7 @@
 				</a>
 			</li>
 			<li class="treeview">
-				<a href="{{ route('fb.friends') }}">
+				<a href="{{ route('fb.getfriends') }}">
 					<i class="fa fa-user-circle" aria-hidden="true"></i> <span>Friends</span>
 				</a>
 			</li>
@@ -24,7 +24,7 @@
 					</span>
 				</a>
 				<ul class="treeview-menu">
-					<li><a href="{{ route('fb.stt') }}"><i class="fa fa-circle-o"></i> Những bài viết bạn đã đăng</a></li>
+					<li><a href="{{ route('fb.stt.getstt') }}"><i class="fa fa-circle-o"></i> Những bài viết bạn đã đăng</a></li>
 					<li><a href="{{ route('fb.stt.poststt') }}"><i class="fa fa-circle-o"></i> Đăng bài lên tường nhà</a></li>
 				</ul>
 			</li>

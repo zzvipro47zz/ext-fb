@@ -3,133 +3,158 @@
 @section('page-content')
 	<div class="row">
 		<div class="col-md-6 col-sm-12 col-xs-12">
-			@if(session('error'))
-				<div class="form-group has-error">
-					<label for="error" class="control-label"><i class="fa fa-exclamation-triangle"></i> {{ session('error') }}</label>
-				</div>
-			@endif
-
 			<div class="input-group">
 				<span class="input-group-addon">Select User:</span>
 				<select name="users-getstt" id="users" class="form-control">
-					@foreach($users as $u)
-						<option value="{{ $u['provider_uid'] }}" selected="{{ old('users-getstt') }}">{{ $u['name'] }}</option>
+					@foreach($socials as $social)
+						<option value="{{ $social['provider_uid'] }}" {{ old('users-getstt') ? 'selected' : null }}">{{ $social['name'] }}</option>
 					@endforeach
 				</select>
 				<div class="input-group-btn">
-					<a href="#" class="btn btn-info" id="get_status">GET STATUS</a>
+					<a href="" class="btn btn-info" id="get_status">GET STATUS</a>
 				</div>
 			</div>
 		</div>
 
-		@if(isset($data))
+		@if(isset($stt_data))
 			<div class="col-md-6 col-sm-12 col-xs-12">
 				<div class="row">
 					<div class="col-md-6">
-						<button class="btn btn-warning btn-block">Delete</button>
+						<div class="form-group">
+							<button class="btn btn-warning btn-block">Delete</button>
+						</div>
 					</div>
 
 					<div class="col-md-6">
-						<button class="btn btn-danger btn-block">Delete ALL</button>
+						<div class="form-group">
+							<button class="btn btn-danger btn-block">Delete ALL</button>
+						</div>
 					</div>
 				</div>
 			</div>
 		@endif
 	</div>
 
-	<div class="margin"></div>
+	@if(session('success') || session('error'))
+		<div class="row">
+			<div class="col-md-12">
+				<div class="alert alert-{{ (session('success') ? 'success' : 'warning') }} alert-dismissable fade in">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					<h4><i class="icon fa fa-{{ (session('success') ? 'check' : 'warning') }}"></i> Thông báo!</h4>
+					{!! session('success') ? session('success') : session('error') !!}
+				</div>
+			</div>
+		</div>
+	@endif
 
-	@if(isset($data))
+	@if(isset($stt_data))
 		<div class="row">
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<h3 class="box-title">Bài viết của {{ $user['name'] }}</h3>
+						<h3 class="box-title">Bài viết của {{ @$user['name'] }}</h3>
 					</div>
 					<div class="box-body">
-						<form action="" class="form-group" id="status">
-							<h4>You choose <span class="label label-success" id="count-checkbox-status">0</span> post to delete</h4>
-							@foreach($data as $news)
-								<div class="box box-info box-solid" id_post="{{ $news->id }}">
-									<div class="box-header with-border">
-										<h3 class="box-title">
-											<a href="{{ $news->attachments->url or 'https://fb.com/'.$user['provider_uid'] }}" target="_blank">{{ $news->story or $user['name']}}</a>
-										</h3>
+						<form action="" class="form-group">
+							<div class="row" id="status">
+								@foreach($stt_data as $value)
+									<div class="col-md-12">
+										<div class="box box-primary box-solid">
+											<div class="box-header with-border">
+												<h3 class="box-title">{{ $value['story'] or $user['name'] }}</h3>
+												<span class="time pull-right"><i class="fa fa-clock-o"></i> {{ $value['created_time'] }}</span>
+											</div>
+											<div class="box-body">
+												<h3>{!! $value['message'] or '' !!}</h3>
+												@if($value['type'] == 'link')
+													<div class="text-center">
+														<img src="{{ $value['full_picture'] or '' }}">
+													</div>
+												@elseif($value['type'] == 'photo')
+													<img src="{{ $value['full_picture'] }}" class="img-responsive img-thumbnail center-block">
+												@elseif($value['type'] == 'video')
+													<div class="text-center">
+														<video src="{{ $value['source'] }}" preload="none" poster="{{ $value['full_picture'] }}" controls></video>
+													</div>
+												@endif
+												<blockquote>
+													{!! isset($value['description']) ? '<p>' . $value['description'] . '</p>' : null !!}
+													<small>POSTED BY <cite>{{ $value['name'] or $user['name'] }}</cite></small>
+												</blockquote>
+											</div>
+											<div class="box-footer">
+												<a href="{{ $value['link'] or 'https://fb.com/'.$value['id'] }}" class="btn btn-primary" target="_blank">Read more</a>
+												<a href="{{ route('fb.delstt', [$user['provider_uid'], $value['id']]) }}" class="btn btn-danger">Delete</a>
+											</div>
+										</div>
 									</div>
-									<div class="box-body">
-										{!! isset($news->message) ? '<h3>'.$news->message.'</h3>' : null !!}
-										@if(!empty($news->attachments))
-											@if(isset($news->attachments->media->image->src))
-												<a href="{{ $news->attachments->url }}" target="_blank"><img src="{{ $news->attachments->media->image->src }}" class="img-thumbnail img-responsive"></a>
-											@elseif(preg_match('/video.*/i', $news->attachments->type))
-												<video src="{{ $news->attachments->url }}" poster="{{ $news->attachments->media->image->src }}" preload="auto" controls></video>
-											@else
-												{{-- life_event --}}
-												<a href="{{ $news->attachments->url }}"><h2>{{ $news->attachments->title }}</h2></a>
-											@endif
-											{!! isset($news->attachments->title) ? '<h4>'.$news->attachments->title.'</h4>' : null !!}
-											{!! isset($news->attachments->description) ? '<blockquote>'.$news->attachments->description.'</blockquote>' : null !!}
-										@endif
-									</div>
-								</div>
-							@endforeach
+								@endforeach
+							</div>
 						</form>
 					</div>
+					<div class="box-footer">
+						<a href="#" class="btn btn-primary btn-block" id="load_more_stt">Xem Thêm</a>
+					</div>
 				</div>
-				<button class="btn btn-info btn-block" id="load_more_post">Xem thêm</button>
 			</div>
 		</div>
 	@endif
 @endsection
 @push('scripts')
 	<script>
-		$.ajaxSetup({
-			headers: {
-				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-			}
-		});
-
-		// lấy id fb user cần get stt
-		var uid = '';
-
 		$('#get_status').on('click', function() {
-			uid = $('#users').val();
-			$(this).attr('href', '/facebook/wall/status/'+uid);
+			var uid = $('#users').val();
+			var url = '/facebook/status/' + uid;
+			$(this).attr('href', url);
 		});
-
-		$('#load_more_post').click(function() {
-			uid = $('#users').val();
-			$.post('/facebook/wall/status/'+uid+'/lmp', function(data) {
+		
+		$('#load_more_stt').click(function() {
+			var url = '{{ route('fb.stt.lmp', [$user['provider_uid']]) }}';
+			$.post(url, function(data) {
 				if (data == 'okay') {
 					$('#load_more_post').remove();
 				} else {
 					var html = '';
 					$.each(data, function(key, value) {
-						html += '<div class="box box-info box-solid" id_post="' + value.id + '">\
-									<div class="box-header with-border">\
-										<h3 class="box-title">\
-											<a href="' + (value.attachments !== undefined ? value.attachments.url : '{{ isset($user) ? 'https://fb.com/'.$user['provider_uid'] : null }}') + '" target="_blank">' + (value.story ? value.story : '{{ isset($user) ? $user['name'] : null }}') + '</a>\
-										</h3>\
+						var type = '';
+						var full_picture = value['full_picture'] || false;
+						var message = value['message'] || false;
+						var description = value['description'] || false;
+						var name = value['name'] || '{{ @$user['name'] }}';
+						var link = value['link'] || 'https://fb.com/' + value['id'];
+
+						if(value['type'] == 'link' || value['type'] == 'photo') {
+							type = full_picture !== false ? '<img src="' + full_picture + '" class="img-responsive img-thumbnail center-block">' : '';
+						} else if(value['type'] == 'video') {
+							type = '<video src="' + value['source'] + '" preload="none" poster="' + full_picture + '" controls>browser không hỗ trợ video</video>';
+						} else if(value['type'] == 'status') {
+							type = message !== false ? '<h3>' + message + '</h3>' : '';
+						}
+						html += '<div class="col-md-12">\
+									<div class="box box-primary box-solid">\
+										<div class="box-header with-border">\
+											<h3 class="box-title">' + (value['story'] || '{{ @$user['name'] }}') + '</h3>\
+											<span class="time pull-right"><i class="fa fa-clock-o"></i> ' + value['created_time'] + '</span>\
+										</div>\
+										<div class="box-body">'
+											+ (value['type'] !== 'status' ? (message !== false ? '<h3>' + value['message'] + '</h3>' : '') : '')
+											+ '<div class="text-center">' + type + '</div>\
+											<blockquote>'
+												+ (description !== false ? '<p>' + description + '</p>' : '')
+												+ '<small>POSTED BY <cite>' + name + '</cite></small>\
+											</blockquote>\
+										</div>\
+										<div class="box-footer">\
+											<a href="' + link + '" class="btn btn-primary" target="_blank">Read more</a>\
+											<a href="{{ route('fb.delstt', [$user['provider_uid'], $value['id']]) }}" class="btn btn-danger">Delete</a>\
+										</div>\
 									</div>\
-									<div class="box-body">'
-										+ (value.message != undefined ? '<h3>' + value.message + '</h3>' : '')
-										+ (value.attachments !== undefined ?
-											(value.attachments.media !== undefined ?
-												'<a href="' + value.attachments.url + '" target="_blank"><img src="' + value.attachments.media.image.src + '" class="img-thumbnail img-responsive"></a>' :
-												(/video/.test(value.attachments.type) ?
-													'<video src="' + value.attachments.url + '" poster="' + value.attachments.media.image.src + '" preload="auto" controls></video>' :
-													/* life_event */ '<a href="' + value.attachments.url + '"><h2>' + value.attachments.title + '</h2></a>'
-												)
-											) : ''
-										)
-										+ (value.attachments !== undefined ? '<h4>' + value.attachments.title + '</h4>' : '')
-										+ (value.attachments !== undefined ? (value.attachments.description !== undefined ? '<blockquote>' + value.attachments.description + '</blockquote>' : '') : '')
-									+'</div>\
 								</div>';
 					});
 					$('#status').append(html);
 				}
 			});
+			return false;
 		});
 
 		// gán vô cho Status của (user)

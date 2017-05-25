@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Facebook;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StatusRequest;
+use App\Post;
 use App\Social;
 use Curl;
 use Illuminate\Http\Request;
@@ -15,105 +15,139 @@ class WallController extends Controller {
 		$this->middleware('auth');
 	}
 
-	public function get_attachments($data, $user) {
-		$detail_feed = [];
-		$len = count($data);
-		for ($i = 0; $i < $len; $i++) {
-			$detail_feed[$i] = json_decode(Curl::to(fb('graph', $data[$i]->id . '/attachments'))->withData(['access_token' => $user['access_token']])->get());
-			if (empty($detail_feed[$i]->data)) {
-				unset($detail_feed[$i]);
-				continue;
-			}
-			// lấy attachments object gán vào cho $feed
-			$data[$i]->attachments = $detail_feed[$i]->data[0];
-
-			// gán khi đã có attachments
-			$attachments = $data[$i]->attachments;
-			if (!isset($attachments->description) && isset($attachments->target->id)) {
-				$description = json_decode(Curl::to(fb('graph', $attachments->target->id))->withData(['access_token' => $user['access_token']])->get());
-				if (isset($description->description)) {
-					$data[$i]->attachments->description = $description->description;
-				}
-			}
-		}
-		return $data;
-	}
-
 	public function getStatus(Request $request, $uid = null) {
-		$users = Social::where('user_id', Auth::user()->id)->get();
-
-		if (!$users) {
-			return view('home')->with('error', 'Bạn chưa đăng nhập tài khoản facebook vào trong hệ thống !');
+		$socials = Social::where('user_id', Auth::user()->id)->get()->toArray();
+		if (!$socials) {
+			return view('home');
 		}
 
-		$users = $users->toArray();
-
-		if (isset($uid)) {
-			$user = Social::where('provider_uid', $uid)->get()->first();
-
-			if (!$user) {
-				return back()->with('error', 'Có lỗi xảy ra, uid facebook không đúng !');
-			}
-
-			$user = $user->toArray();
-			// lấy bài viết trên tường nhà
-			$feed = json_decode(Curl::to(fb('graph', $uid . '/feed'))->withData(['access_token' => $user['access_token']])->get());
-			$data = $feed->data;
-			$paging_next = $feed->paging->next;
-
-			$request->session()->put('paging', $paging_next);
-
-			$data = $this->get_attachments($data, $user);
-
-			return view('auto.status.getstatus', compact('user', 'users', 'data', 'paging_next'));
+		if ($uid == null) {
+			return view('auto.status.getstatus', compact('socials'));
 		}
-		return view('auto.status.getstatus', compact('users'));
+		$user = Social::where('provider_uid', $uid)->get()->first()->toArray();
+		if (!$user) {
+			return back()->with('error', 'Có lỗi xảy ra, uid facebook không đúng !');
+		}
+		// lấy bài viết trên tường nhà
+		$feed = Curl::to(fb('graph', $uid . '/feed'))
+			->withData(['fields' => 'message,description,story,name,link,type,full_picture,source,created_time', 'access_token' => $user['access_token']])
+			->get();
+		$feed_data = str_replace('\\n', '<br />', $feed);
+		$feed = json_decode($feed_data, true);
+
+		$stt_data = $feed['data'];
+		$stt_page = $feed['paging']['next'];
+		$request->session()->put('stt_page', $stt_page);
+
+		return view('auto.status.getstatus', compact('user', 'socials', 'stt_data'));
 	}
 
 	public function Ajax_LoadMorePost(Request $request, $uid) {
 		if ($request->ajax()) {
 			$user = Social::where('provider_uid', $uid)->get()->first();
-			$paging = $request->session()->get('paging');
+			if (!$user) {
+				return back()->with('error', 'User Facebook ID không đúng !');
+			}
+			$stt_page = $request->session()->get('stt_page');
 
-			$feed = json_decode(Curl::to($paging)->get());
-			$data = $feed->data;
-			if (empty($data)) {
+			$feed = Curl::to($stt_page)->get();
+			$feed_data = str_replace('\\n', '<br />', $feed);
+			$feed = json_decode($feed_data, true);
+
+			$stt_data = $feed['data'];
+			if (empty($stt_data)) {
 				return 'okay';
 			}
-			$paging_next = $feed->paging->next;
+			$stt_page = $feed['paging']['next'];
 
-			$request->session()->put('paging', $paging_next);
-
-			$data = $this->get_attachments($data, $user);
-			return $data;
+			$request->session()->put('stt_page', $stt_page);
+			return $stt_data;
 		}
-		return back()->with('error', 'Yêu cầu không đúng !');
+		return redirect('home')->with('error', 'Yêu cầu không đúng !');
 	}
 
-	public function postStatus(StatusRequest $request, $uid = null) {
-		$users = Social::where('user_id', Auth::user()->id)->get();
-		if (!$users) {
-			return view('home')->with('error', 'Bạn chưa đăng nhập tài khoản facebook vào trong hệ thống !');
+	public function postStatus(Request $request) {
+		$socials = Social::where('user_id', Auth::user()->id)->get()->toArray();
+		if (!$socials) {
+			return view('home');
+		}
+		if ($request->uid == null) {
+			return view('auto.status.poststatus', compact('socials'));
+		}
+		$social = Social::where('provider_uid', $request->uid)->get()->first()->toArray();
+		if (!$social) {
+			return back()->with('error', 'ID facebook không tồn tại trong hệ thống !');
 		}
 
-		$users = $users->toArray();
-
-		if ($uid != null) {
-			$user = Social::where('provider_uid', $uid)->get()->first();
-
-			if (empty($request->behind) && empty($request->image)) {
-				return back()->with('Fail', 'Gửi không thành công ! bạn phải điền đầy đủ');
-			} elseif (!empty($request->behind) && empty($request->image)) {
-				$feed = Curl::to(fb('graph', $user['provider_uid'] . '/feed'))
+		$feed = '';
+		if (empty($request->message) && empty($request->images)) {
+			return back()->with('error', 'Đăng bài không thành công, bạn phải điền đầy đủ');
+		} elseif (!empty($request->message && !$request->hasFile('images'))) {
+			$feed = json_decode(Curl::to(fb('graph', $social['provider_uid'] . '/feed'))
 					->withData([
-						'message' => $request->behind,
-						'access_token' => $user['token'],
-					])->post();
-				preg_match("/:\"(.*)\"}/i", $feed, $post); // regex lấy id bài viết
-				return back()->with('Success', '<a href="https://fb.com/' . $post[1] . '" target="_blank">Ấn vào đây</a> để xem bài viết của bạn');
-			}
-			return view('auto.status.poststatus', compact('user', 'users'));
+						'message' => $request->message,
+						'access_token' => $social['access_token'],
+					])->post(), true);
+			$this->insertPostStt(time(), $social['id'], $request->message);
+		} elseif ($request->hasFile('images')) {
+			$attached = $this->postUnpublishedPhotos($request->file('images'), $request->caption, $social);
+			$message = [
+				'message' => $request->message,
+				'access_token' => $social['access_token'],
+			];
+			$data = array_merge($attached, $message);
+			$feed = json_decode(Curl::to(fb('graph', $social['provider_uid'] . '/feed'))->withData($data)->post(), true);
 		}
-		return view('auto.status.poststatus', compact('users'));
+		if (!empty($feed['error'])) {
+			$error = handlingfbcode($feed['error']);
+			return back()->with('error', 'Lỗi ' . $error . ', vui lòng liên hệ QTV để fix (:');
+		}
+		return back()->with('success', 'Đăng bài thành công. <a href="https://fb.com/' . $feed['id'] . '" target="_blank">Ấn vào đây</a> để xem bài viết của bạn');
+	}
+
+	public function postUnpublishedPhotos($files, $captions, $social) {
+		$photos = [];
+		$attached_media = [];
+		$media_fbid = [];
+		// upload image lên server và đăng bài viết với chế độ published=false
+		foreach ($files as $key => $value) {
+			if ($file[$key]->isValid()) {
+				$url_picture = upanh($file[$key]->getPathname()); // tmp name
+
+				$photos[$key] = json_decode(Curl::to(fb('graph', $social['provider_uid'] . '/photos'))->withData([
+					'url' => $url_picture,
+					'caption' => $captions[$key],
+					'published' => 'false',
+					'access_token' => $social['access_token'],
+				])->post())->id;
+
+				$attached_media[$key] = 'attached_media[' . $key . ']';
+				$media_fbid[$key] = '{"media_fbid":"' . $photos[$key] . '"}';
+			}
+		}
+		$attached = array_combine($attached_media, $media_fbid);
+		return $attached;
+	}
+
+	public function insertPostStt($time, $social_id, $message = null, $caption = null, $url_anh = null) {
+		Post::create([
+			'message' => $message,
+			'caption' => $caption,
+			'image' => $url_anh,
+			'post_at' => strtotime($time),
+			'social_id' => $social_id,
+		]);
+	}
+
+	public function deleteStatus($uid, $idStatus) {
+		$user = Social::where('provider_uid', $uid)->get()->first()->toArray();
+		if (!$user) {
+			return back()->with('error', 'User không tồn tại trong hệ thống');
+		}
+		$delstt = json_decode(Curl::to(fb('graph', $idStatus))->withData(['access_token' => $user['access_token']])->delete(), true);
+		if ($delstt['success']) {
+			return back()->with('success', 'Xóa bài viết thành công !');
+		}
+		return back()->with('error', 'Có lỗi xảy ra khi xóa bài viết !');
 	}
 }

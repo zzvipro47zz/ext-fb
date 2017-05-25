@@ -1,3 +1,3 @@
-$(function() {
-	$('#dataTables-friends, #dataTables-get_status').DataTable();
-});
+(function() {
+	// $('#dataTables-get_status').DataTable();
+})();
