@@ -109,7 +109,7 @@
 		});
 		
 		$('#load_more_stt').click(function() {
-			var url = '{{ route('fb.stt.lmp', [$user['provider_uid']]) }}';
+			var url = '{{ isset($user['provider_uid']) ? route('fb.stt.lmp', [$user['provider_uid']]) : null }}';
 			$.post(url, function(data) {
 				if (data == 'okay') {
 					$('#load_more_post').remove();
@@ -146,7 +146,7 @@
 										</div>\
 										<div class="box-footer">\
 											<a href="' + link + '" class="btn btn-primary" target="_blank">Read more</a>\
-											<a href="{{ route('fb.delstt', [$user['provider_uid'], $value['id']]) }}" class="btn btn-danger">Delete</a>\
+											<a href="{{ isset($user['provider_uid']) ? route('fb.delstt', [$user['provider_uid'], $value['id']]) : null }}" class="btn btn-danger">Delete</a>\
 										</div>\
 									</div>\
 								</div>';

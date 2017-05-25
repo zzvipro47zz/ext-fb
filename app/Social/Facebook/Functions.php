@@ -85,6 +85,9 @@ function handlingfbcode($error) {
 		case 400:
 			$message = $error['error_msg'];
 			break;
+		case 405:
+			$message = $error['error_msg'] . 'Account có thể bị checkpoint!';
+			break;
 		default:
 			$message = 'Chưa thiết lập error code!';
 			break;

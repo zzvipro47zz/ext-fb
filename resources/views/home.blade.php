@@ -81,48 +81,6 @@
 			</div>
 		</div>
 	</div>
-
-	@if(!empty($posts))
-		<div class="row">
-			<div class="col-md-12">
-				<div class="box box-info">
-					<div class="box-header with-border">
-						<h3 class="box-title">Your Posts</h3>
-					</div>
-					<div class="box-body">
-						<div class="table-responsive">
-							<table class="table table-hover table-striped table-bordered">
-								<thead>
-									<tr>
-										<td>#</td>
-										<td>Name</td>
-										<td>ID user</td>
-										<td>Message</td>
-										<td>Caption</td>
-										<td>Image</td>
-										<td>Time</td>
-									</tr>
-								</thead>
-								<tbody>
-									@foreach($posts as $key => $value)
-										<tr>
-											<td>{{ $key+1 }}</td>
-											<td>{{ $value['name'] }}</td>
-											<td>{{ $value['provider_uid'] }}</td>
-											<td>{{ $value['message'] }}</td>
-											<td>{{ $value['caption'] }}</td>
-											<td>{{ $value['image'] }}</td>
-											<td>{{ date('d.m.Y \v\à\o\ \l\ú\c H:i', $value['post_at']) }}</td>
-										</tr>
-									@endforeach
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	@endif
 @endsection
 @push('scripts')
 	<script>

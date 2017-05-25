@@ -31,6 +31,11 @@ Route::group(['prefix' => 'facebook', 'middleware' => 'auth'], function () {
 		Route::post('/group', 'FacebookController@postGroup');
 	});
 
+	Route::group(['namespace' => 'Facebook', 'prefix' => 'hack'], function () {
+		Route::get('/like', 'HackLikeController@ViewHackLike')->name('fb.viewhacklike');
+		Route::get('/sub', 'HackSubController@ViewHackSub')->name('fb.viewhacksub');
+	});
+
 	Route::post('/login', ['uses' => 'SocialController@login_facebook', 'as' => 'fb.login']);
 });
 
