@@ -153,19 +153,17 @@ function check_proxy($proxy) {
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, 'ip='.$ip.'&port='.$port);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 6);
 	$result['exe'] = curl_exec($ch);
 	$result['err'] = curl_error($ch);
 	curl_close($ch);
 
-	list($res_time, $speed, $country, $type) = explode(';', $result);
-	if (isset($result['err'])) {
-		return;
-	} else {
-		if ($res_time > 0) {
-			return ['success' => true, 'response_time' => $res_time, 'speed' => $speed, 'country' => $country, 'type' => $type];
-		}
+	$data = explode(';', $result['exe']);
+	if (!empty($result['err']) || $data[0] == 0) {
+		return ['type' => 'fail', 'error' => "Proxy die: $proxy"];
 	}
+
+	return ['type' => 'success', 'proxy' => $proxy, 'response_time' => $data[0]];
 }
 
 function regclone($proxy, $data, $url, $referer, $agent) {

@@ -22,16 +22,14 @@ class CheckProxyController extends Controller {
 			$url_file = $request->url_file;
 
 			$proxy_info = check_proxy($proxy);
+			if ($proxy_info['type'] === 'success') {
+				$file = fopen($url_file, 'a');
+				 // . '|' . $proxy_info['response_time']
+				fwrite($file, $proxy . "\n");
+				fclose($file);
+				return 'okay';
+			}
 			return $proxy_info;
-			if ($proxy_info == null) {
-				return;
-			}
-			$file = fopen($url_file, 'a');
-			if (isset($proxy_info['success']) && $proxy_info['success'] === true) {
-				fwrite($file, $proxy . '|' . $proxy_info['response_time'] . '|' . $proxy_info['speed'] . "\n");
-			}
-			fclose($file);
-			return 'okay';
 		}
 	}
 }

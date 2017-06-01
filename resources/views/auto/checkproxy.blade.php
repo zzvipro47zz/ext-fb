@@ -29,13 +29,20 @@
 @endsection
 @push('scripts')
 	<script>
+		/*$(window).bind('beforeunload',function(){
+			$(document).ajaxStop();
+		});*/
+		window.onbeforeunload = function() {
+			$(document).ajaxStop();
+		}
 		$('#checkproxy #start').click(function(e) {
 			e.preventDefault();
 			var list_proxy = $('[name=list_proxy]').val();
 			var url = '{{ route('fb.checkproxy') }}';
 			var randomStr = random('number', 3) + '-' + random('string', 5) + '.txt';
-			var url_file = '{{ addslashes(public_path('proxy')) . '/proxy-' }}' + randomStr;
+			var url_file = '{{ addslashes(public_path('proxy')) . '/proxy-' }}' + randomStr; // public/proxy
 			list_proxy = list_proxy.split("\n");
+
 			$.each(list_proxy, function(key, proxy) {
 				$.ajax({
 					url: url,
@@ -47,6 +54,9 @@
 					},
 					cache: false,
 					success:function(data) {
+						console.log(data);
+						console.log(key);
+						console.log(list_proxy.length-1);
 						if (key == list_proxy.length-1) {
 							alert('Scan proxy success');
 						}
