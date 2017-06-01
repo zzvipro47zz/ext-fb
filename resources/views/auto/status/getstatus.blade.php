@@ -67,9 +67,11 @@
 											<div class="box-body">
 												<h3>{!! $value['message'] or '' !!}</h3>
 												@if($value['type'] == 'link')
-													<div class="text-center">
-														<img src="{{ $value['full_picture'] or '' }}">
-													</div>
+													@if(isset($value['full_picture']))
+														<div class="text-center">
+															<img src="{{ $value['full_picture'] }}" class="img-responsive img-thumbnail center-block">
+														</div>
+													@endif
 												@elseif($value['type'] == 'photo')
 													<img src="{{ $value['full_picture'] }}" class="img-responsive img-thumbnail center-block">
 												@elseif($value['type'] == 'video')
@@ -124,7 +126,7 @@
 						var link = value['link'] || 'https://fb.com/' + value['id'];
 
 						if(value['type'] == 'link' || value['type'] == 'photo') {
-							type = full_picture !== false ? '<img src="' + full_picture + '" class="img-responsive img-thumbnail center-block">' : '';
+							type = full_picture !== false ? '<div class="text-center"><img src="' + full_picture + '" class="img-responsive img-thumbnail center-block"></div>' : '';
 						} else if(value['type'] == 'video') {
 							type = '<video src="' + value['source'] + '" preload="none" poster="' + full_picture + '" controls>browser không hỗ trợ video</video>';
 						} else if(value['type'] == 'status') {

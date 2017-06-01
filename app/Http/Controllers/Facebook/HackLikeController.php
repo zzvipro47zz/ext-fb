@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class HackLikeController extends Controller {
+	public function __construct() {
+		$this->middleware('auth');
+	}
+
 	public function ViewHackLike() {
 		return view('auto.like');
 	}

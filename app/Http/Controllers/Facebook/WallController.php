@@ -129,16 +129,6 @@ class WallController extends Controller {
 		return $attached;
 	}
 
-	public function insertPostStt($time, $social_id, $message = null, $caption = null, $url_anh = null) {
-		Post::create([
-			'message' => $message,
-			'caption' => $caption,
-			'image' => $url_anh,
-			'post_at' => strtotime($time),
-			'social_id' => $social_id,
-		]);
-	}
-
 	public function deleteStatus($uid, $idStatus) {
 		$user = Social::where('provider_uid', $uid)->get()->first()->toArray();
 		if (!$user) {

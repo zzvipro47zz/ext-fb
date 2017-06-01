@@ -79,6 +79,7 @@
 	@stack('libs-scripts')
 
 	<!-- my js -->
+	<script src="{{ asset('js/functions.js') }}"></script>
 	<script src="{{ asset('js/table.js') }}"></script>
 	<script src="{{ asset('js/checkbox.js') }}"></script>
 	<script src="{{ asset('js/ready.js') }}"></script>
@@ -86,7 +87,7 @@
 	<script>
 		$.ajaxSetup({
 			headers: {
-				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
 			}
 		});
 	</script>

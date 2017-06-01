@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
 class SocialController extends Controller {
+	public function __construct() {
+		$this->middleware('auth');
+	}
+
 	public function login_facebook(Request $request) {
 		$username = $request->only('username')['username'];
 		$password = $request->only('password')['password'];

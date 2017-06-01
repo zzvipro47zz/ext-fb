@@ -38,14 +38,58 @@ function sign_creator($username, $password) {
 	return file_get_contents('https://api.facebook.com/restserver.php?' . http_build_query($data));
 }
 
-function randomString($length = 5) {
-	$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	$charactersLength = strlen($characters);
-	$randomString = '';
-	for ($i = 0; $i < $length; $i++) {
-		$randomString .= $characters[rand(0, $charactersLength - 1)];
+function stripUnicode($str) {
+	if(!$str) return false;
+	$unicode = array(
+		'a'=>'á|à|ả|ã|ạ|ă|ắ|ặ|ằ|ẳ|ẵ|â|ấ|ầ|ẩ|ẫ|ậ',
+		'd'=>'đ',
+		'e'=>'é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ',
+		'i'=>'í|ì|ỉ|ĩ|ị',
+		'o'=>'ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ',
+		'u'=>'ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự',
+		'y'=>'ý|ỳ|ỷ|ỹ|ỵ',
+		'A'=>'Á|À|Ả|Ã|Ạ|Ă|Ắ|Ằ|Ẳ|Ẵ|Ặ|Â|Ấ|Ầ|Ẩ|Ẫ|Ậ',
+		'D'=>'Đ',
+		'E'=>'É|È|Ẻ|Ẽ|Ẹ|Ê|Ế|Ề|Ể|Ễ|Ệ',
+		'I'=>'Í|Ì|Ỉ|Ĩ|Ị',
+		'O'=>'Ó|Ò|Ỏ|Õ|Ọ|Ô|Ố|Ồ|Ổ|Ỗ|Ộ|Ơ|Ớ|Ờ|Ở|Ỡ|Ợ',
+		'U'=>'Ú|Ù|Ủ|Ũ|Ụ|Ư|Ứ|Ừ|Ử|Ữ|Ự',
+		'Y'=>'Ý|Ỳ|Ỷ|Ỹ|Ỵ',
+		'' => ' ',
+	);
+	foreach($unicode as $khongdau => $codau) {
+		$str = preg_replace("/($codau)/i", $khongdau, $str);
 	}
-	return $randomString;
+	return strtolower($str);
+}
+
+function random($type, $length = 5) {
+	if ($type == 'email') {
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+		$charactersLength = strlen($characters) - 1;
+		$randomString = '';
+		for ($i = 0; $i < $length; $i++) {
+			$randomString .= $characters[rand(0, $charactersLength)];
+		}
+		return $randomString;
+	} elseif($type == 'string') {
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$charactersLength = strlen($characters) - 1;
+		$randomString = '';
+		for ($i = 0; $i < $length; $i++) {
+			$randomString .= $characters[rand(0, $charactersLength)];
+		}
+		return $randomString;
+	} elseif ($type == 'number') {
+		$randomNumber = substr(str_shuffle(str_repeat('0123456789', 3)), 0, $length);
+		return $randomNumber;
+	} elseif ($type == 'phone') {
+		$length = 7;
+		$nhamang = ['086', '096', '097', '098', '0162', '0163', '0164', '0165', '0166', '0167', '0168', '0169', '090', '093', '0120', '0121', '0122', '0126', '0128', '091', '094', '0123', '0124', '0125', '0127', '0129'];
+		$randomNhamang = $nhamang[mt_rand(0, count($nhamang) - 1)];
+		$phone = $randomNhamang . substr(str_shuffle(str_repeat('0123456789', 3)), 0, $length);
+		return $phone;
+	}
 }
 
 function upanh($filename) {
@@ -98,4 +142,55 @@ function handlingfbcode($error) {
 function validateDate($date, $format = 'd.m.Y H:i') {
 	$d = DateTime::createFromFormat($format, $date);
 	return $d && $d->format($format) == $date;
+}
+
+function check_proxy($proxy) {
+	$proxy_info = explode(':', $proxy);
+	$ip = $proxy_info[0];
+	$port = $proxy_info[1];
+
+	$ch = curl_init('http://api.proxyipchecker.com/pchk.php');
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, 'ip='.$ip.'&port='.$port);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+	$result['exe'] = curl_exec($ch);
+	$result['err'] = curl_error($ch);
+	curl_close($ch);
+
+	list($res_time, $speed, $country, $type) = explode(';', $result);
+	if (isset($result['err'])) {
+		return;
+	} else {
+		if ($res_time > 0) {
+			return ['success' => true, 'response_time' => $res_time, 'speed' => $speed, 'country' => $country, 'type' => $type];
+		}
+	}
+}
+
+function regclone($proxy, $data, $url, $referer, $agent) {
+	$timeout = 5;
+
+	$proxy_info = explode(':', $proxy);
+	$ip = $proxy_info[0];
+	$port = $proxy_info[1];
+
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_REFERER, $referer);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_PROXY, $ip);
+	curl_setopt($ch, CURLOPT_PROXYPORT, $port);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+	curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+	if (!empty($data)) {
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+	}
+
+	$result['exe'] = curl_exec($ch);
+	$result['err'] = curl_error($ch);
+
+	curl_close($ch);
+	return $result;
 }

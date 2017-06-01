@@ -50,6 +50,13 @@
 			</li>
 
 			<li class="treeview">
+				<a href="{{ route('fb.viewnuoiclone') }}">
+					<i class="fa fa-plus"></i>
+					<span>Nuôi Clone</span>
+				</a>
+			</li>
+
+			<li class="treeview">
 				<a href="{{ route('fb.viewhacklike') }}">
 					<i class="fa fa-thumbs-up"></i>
 					<span>Hack like</span>
@@ -60,6 +67,13 @@
 				<a href="{{ route('fb.viewhacksub') }}">
 					<i class="fa fa-plus"></i>
 					<span>Hack sub</span>
+				</a>
+			</li>
+
+			<li class="treeview">
+				<a href="{{ route('fb.viewcheckproxy') }}">
+					<i class="fa fa-plus"></i>
+					<span>Check Proxy</span>
 				</a>
 			</li>
 		</ul>

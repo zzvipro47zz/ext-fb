@@ -11,7 +11,7 @@ class CreateSocialsTable extends Migration {
 			$table->string('provider_uid', 20)->unique();
 			$table->string('name');
 			$table->string('email')->nullable();
-			$table->string('phone')->nullable();
+			$table->string('phone', 20)->nullable();
 			$table->unsignedTinyInteger('gender')->comment('0: Nữ - 1: Nam');
 			$table->string('password');
 			$table->string('link');
@@ -21,7 +21,7 @@ class CreateSocialsTable extends Migration {
 			$table->string('cookie', 255);
 			$table->string('provider');
 			$table->unsignedInteger('user_id');
-			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+			$table->foreign('user_id')->references('id')->on('users');
 			$table->timestamps();
 		});
 	}
