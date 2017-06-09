@@ -15,8 +15,8 @@ class CreateSocialsTable extends Migration {
 			$table->unsignedTinyInteger('gender')->comment('0: Nữ - 1: Nam');
 			$table->string('password');
 			$table->string('link');
-			$table->UnsignedInteger('likes')->default(0);
 			$table->UnsignedInteger('subs')->default(0);
+			$table->UnsignedInteger('friends')->default(0);
 			$table->string('access_token', 300);
 			$table->string('cookie', 255);
 			$table->string('provider');

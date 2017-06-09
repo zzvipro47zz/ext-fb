@@ -1,19 +1,20 @@
 <?php
 
-function fb($sub_domain, $relative_url = null, $mission = '') {
-	$url = 'https://' . $sub_domain . '.facebook.com/';
-
-	if ($sub_domain == 'graph' && $mission == '') {
-		$url .= 'v2.9/';
+function mkurl($is_ssl, $sub_domain, $host, $relative_url = null, $fields = []) {
+	$url = ($is_ssl === true ? 'https://' : 'http://') . (!empty($sub_domain) ? $sub_domain . '.' : null) . $host . '/' . (!empty($relative_url) ? $relative_url : null);
+	if (!empty($fields)) {
+		$url .= '?';
+		$len = count($fields)-1;
+		foreach ($fields as $key => $field) {
+			$url .= "$key=$field" . ($len === $key ? null : '&');
+		}
 	}
-
-	$url .= $relative_url;
-
 	return $url;
 }
 
 function sign_creator($username, $password) {
 	$data = array(
+		// 'api_key' => '882a8490361da98702bf97a021ddc14d', // fb for android
 		'api_key' => '3e7c78e35a76a9299309885393b02d97',
 		'email' => $username,
 		'format' => 'JSON',
@@ -32,6 +33,7 @@ function sign_creator($username, $password) {
 	}
 
 	$sig .= 'c1e620fa708a1d5696fb991c1bde5662';
+	// $sig .= '62f8ce9f74b12f84c123cc23437a4a32';
 	$sig = md5($sig);
 	$data['sig'] = $sig;
 
@@ -144,6 +146,49 @@ function validateDate($date, $format = 'd.m.Y H:i') {
 	return $d && $d->format($format) == $date;
 }
 
+function convert_cookie($session_cookies) {
+	$cookie = '';
+	for ($i = 0; $i < 2; $i++) {
+		$cookie .= $session_cookies[$i]['name'] . '=' . $session_cookies[$i]['value'] . ';';
+	}
+	return $cookie;
+}
+
+function arr_sort($array, $on, $order=SORT_ASC)
+{
+	$new_array = array();
+	$sortable_array = array();
+
+	if (count($array) > 0) {
+		foreach ($array as $k => $v) {
+			if (is_array($v)) {
+				foreach ($v as $k2 => $v2) {
+					if ($k2 == $on) {
+						$sortable_array[$k] = $v2;
+					}
+				}
+			} else {
+				$sortable_array[$k] = $v;
+			}
+		}
+
+		switch ($order) {
+			case SORT_ASC:
+				asort($sortable_array);
+			break;
+			case SORT_DESC:
+				arsort($sortable_array);
+			break;
+		}
+
+		foreach ($sortable_array as $k => $v) {
+			$new_array[$k] = $array[$k];
+		}
+	}
+
+	return $new_array;
+}
+
 function check_proxy($proxy) {
 	$proxy_info = explode(':', $proxy);
 	$ip = $proxy_info[0];
@@ -166,29 +211,21 @@ function check_proxy($proxy) {
 	return ['type' => 'success', 'proxy' => $proxy, 'response_time' => $data[0]];
 }
 
-function regclone($proxy, $data, $url, $referer, $agent) {
-	$timeout = 5;
+function clone_info() {
+	$url = 'https://uinames.com/api/?region=vietnam&ext';
+	$info = json_decode(Curl::to($url)->get(), true);
 
-	$proxy_info = explode(':', $proxy);
-	$ip = $proxy_info[0];
-	$port = $proxy_info[1];
-
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_REFERER, $referer);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_PROXY, $ip);
-	curl_setopt($ch, CURLOPT_PROXYPORT, $port);
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-	curl_setopt($ch, CURLOPT_USERAGENT, $agent);
-	if (!empty($data)) {
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-	}
-
-	$result['exe'] = curl_exec($ch);
-	$result['err'] = curl_error($ch);
-
-	curl_close($ch);
-	return $result;
+	$user['firstname'] = $info['surname'];
+	$user['lastname'] = $info['name'];
+	$user['full_name'] = $info['surname'] . ' ' . $info['name'];
+	$user['name'] = stripUnicode($user['full_name']) . '.' . random('email', 3) . '_' . random('number', 3);
+	$user['email'] = $user['name'] . '@pulpmail.us';
+	$user['pass'] = random('string', 10);
+	$user['phone'] = random('phone');
+	$user['gender'] = $info['gender'] === 'female' ? 0 : 1;
+	$dob = explode('/', $info['birthday']['dmy']);
+	$user['d'] = $dob[0];
+	$user['m'] = $dob[1];
+	$user['y'] = $dob[2];
+	return json_encode($user, JSON_UNESCAPED_UNICODE);
 }

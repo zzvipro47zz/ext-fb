@@ -1,3 +1,3 @@
 (function() {
-	// $('#dataTables-get_status').DataTable();
+	$('#dataTables-get_status, #dataTables-messarnk').DataTable();
 })();

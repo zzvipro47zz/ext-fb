@@ -29,9 +29,8 @@ class WallController extends Controller {
 			return back()->with('error', 'Có lỗi xảy ra, uid facebook không đúng !');
 		}
 		// lấy bài viết trên tường nhà
-		$feed = Curl::to(fb('graph', $uid . '/feed'))
-			->withData(['fields' => 'message,description,story,name,link,type,full_picture,source,created_time', 'access_token' => $user['access_token']])
-			->get();
+		$url_get_feed = mkurl(true, 'graph', 'facebook.com', "$uid/feed", ['fields' => 'message,description,story,name,link,type,full_picture,source,created_time', 'access_token' => $user['access_token']]);
+		$feed = Curl::to($url_get_feed)->get();
 		$feed_data = str_replace('\\n', '<br />', $feed);
 		$feed = json_decode($feed_data, true);
 
@@ -115,7 +114,7 @@ class WallController extends Controller {
 				$url_picture = upanh($file[$key]->getPathname()); // tmp name
 
 				$photos[$key] = json_decode(Curl::to(fb('graph', $social['provider_uid'] . '/photos'))->withData([
-					'url' => $url_picture,
+					'mkurl' => $url_picture,
 					'caption' => $captions[$key],
 					'published' => 'false',
 					'access_token' => $social['access_token'],
@@ -134,7 +133,8 @@ class WallController extends Controller {
 		if (!$user) {
 			return back()->with('error', 'User không tồn tại trong hệ thống');
 		}
-		$delstt = json_decode(Curl::to(fb('graph', $idStatus))->withData(['access_token' => $user['access_token']])->delete(), true);
+		$url_del_stt = mkurl(true, 'graph', 'facebook.com', $idStatus, ['access_token' => $user['access_token']]);
+		$delstt = json_decode(Curl::to($url_del_stt)->delete(), true);
 		if ($delstt['success']) {
 			return back()->with('success', 'Xóa bài viết thành công !');
 		}

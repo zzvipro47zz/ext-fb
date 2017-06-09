@@ -54,9 +54,6 @@
 					},
 					cache: false,
 					success:function(data) {
-						console.log(data);
-						console.log(key);
-						console.log(list_proxy.length-1);
 						if (key == list_proxy.length-1) {
 							alert('Scan proxy success');
 						}

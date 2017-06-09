@@ -16,9 +16,17 @@
 			</li>
 
 			<li class="treeview">
-				<a href="{{ route('fb.getfriends') }}">
-					<i class="fa fa-file-text-o" aria-hidden="true"></i> <span>Messenger</span>
+				<a href="#">
+					<i class="fa fa-file-text-o" aria-hidden="true"></i>
+					<span>Messenger</span>
+					<span class="pull-right-container">
+						<i class="fa fa-angle-left pull-right"></i>
+					</span>
 				</a>
+				<ul class="treeview-menu">
+					<li><a href="{{ route('fb.stt.getstt') }}"><i class="fa fa-circle-o"></i> Nhắn tin tất cả bạn bè</a></li>
+					<li><a href="{{ route('fb.mess.viewmess') }}"><i class="fa fa-circle-o"></i> Xếp hạng cuộc trò chuyện</a></li>
+				</ul>
 			</li>
 
 			<li class="treeview">
@@ -57,14 +65,14 @@
 			</li>
 
 			<li class="treeview">
-				<a href="{{ route('fb.viewhacklike') }}">
+				<a href="{{ route('view.auto.like') }}">
 					<i class="fa fa-thumbs-up"></i>
 					<span>Hack like</span>
 				</a>
 			</li>
 
 			<li class="treeview">
-				<a href="{{ route('fb.viewhacksub') }}">
+				<a href="{{ route('view.auto.sub') }}">
 					<i class="fa fa-plus"></i>
 					<span>Hack sub</span>
 				</a>

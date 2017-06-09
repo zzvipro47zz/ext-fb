@@ -29,7 +29,8 @@ class FriendsController extends Controller {
 			return back()->with('error', 'Có lỗi xảy ra, uid facebook không đúng !');
 		}
 
-		$friends = json_decode(Curl::to(fb('graph', $uid . '/friends'))->withData(['fields' => 'name,picture,cover{source}', 'access_token' => $user['access_token']])->get(), true);
+		$url_info_fr = mkurl(true, 'graph', 'facebook.com', "v2.9/$uid/friends", ['fields' => 'name,picture,cover{source}', 'access_token' => $user['access_token']]);
+		$friends = json_decode(Curl::to($url_info_fr)->get(), true);
 		$friends_data = $friends['data'];
 		$friends_page = $friends['paging']['next'];
 		$request->session()->put('friends_page', $friends_page);
@@ -59,7 +60,8 @@ class FriendsController extends Controller {
 		}
 		$cookie = $user['cookie'];
 
-		$get_data = Curl::to(fb('mbasic', 'removefriend.php?friend_id=' . $idFriend))
+		$url_getdata_unfr = mkurl(true, 'mbasic', 'facebook.com', 'removefriend.php', ['friend_id' => $idFriend]);
+		$get_data = Curl::to($url_getdata_unfr)
 			->withOption('USERAGENT', $this->user_agent)
 			->withHeader('cookie: '.$cookie)->get();
 		preg_match('/fb_dtsg" value="(.+?)"/i', $get_data, $fb_dtsg);
@@ -70,6 +72,7 @@ class FriendsController extends Controller {
 			'unref' => 'profile_gear',
 			'confirm' => 'Confirmer',
 		];
+		$url_unfr = mkurl(true, 'mbasic', 'facebook.com', 'a/removefriend.php', null);
 		Curl::to(fb('mbasic', 'a/removefriend.php'))
 			->withOption('USERAGENT', $this->user_agent)
 			->withData($post_fields)
@@ -84,7 +87,8 @@ class FriendsController extends Controller {
 		$list_friend = $request->list_friend;
 
 		foreach ($list_friend as $value) {
-			$get_data = Curl::to(fb('mbasic', 'removefriend.php?friend_id=' . $value))
+			$url_getdata_unfr = mkurl(true, 'mbasic', 'facebook.com', 'removefriend.php', ['friend_id' => $value]);
+			$get_data = Curl::to($url_getdata_unfr)
 				->withOption('USERAGENT', $this->user_agent)
 				->withHeader('cookie: '.$cookie)->get();
 
@@ -96,7 +100,8 @@ class FriendsController extends Controller {
 				'unref' => 'profile_gear',
 				'confirm' => 'Confirmer',
 			];
-			Curl::to(fb('mbasic', 'a/removefriend.php'))
+			$url_unfr = mkurl(true, 'mbasic', 'facebook.com', 'a/removefriend.php', null);
+			Curl::to($url_unfr)
 				->withOption('USERAGENT', $this->user_agent)
 				->withData($post_fields)
 				->withHeader('cookie: '.$cookie)->post();
