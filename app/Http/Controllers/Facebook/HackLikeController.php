@@ -14,9 +14,4 @@ class HackLikeController extends Controller {
 	public function ViewHackLike() {
 		return view('auto.like');
 	}
-
-	public function test() {
-		$test = new TesseractOCR(asset('public/images/1.jpg'));
-		echo $test->a();
-	}
 }

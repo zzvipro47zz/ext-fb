@@ -6,7 +6,7 @@ function mkurl($is_ssl, $sub_domain, $host, $relative_url = null, $fields = []) 
 		$url .= '?';
 		$len = count($fields)-1;
 		foreach ($fields as $key => $field) {
-			$url .= "$key=$field" . ($len === $key ? null : '&');
+			$url .= "$key=$field" . ($field === end($fields) ? null : '&');
 		}
 	}
 	return $url;

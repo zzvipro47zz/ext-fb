@@ -29,7 +29,7 @@ class WallController extends Controller {
 			return back()->with('error', 'Có lỗi xảy ra, uid facebook không đúng !');
 		}
 		// lấy bài viết trên tường nhà
-		$url_get_feed = mkurl(true, 'graph', 'facebook.com', "$uid/feed", ['fields' => 'message,description,story,name,link,type,full_picture,source,created_time', 'access_token' => $user['access_token']]);
+		$url_get_feed = mkurl(true, 'graph', 'facebook.com', "v2.9/$uid/feed", ['fields' => 'message,description,story,name,link,type,full_picture,source,created_time', 'access_token' => $user['access_token']]);
 		$feed = Curl::to($url_get_feed)->get();
 		$feed_data = str_replace('\\n', '<br />', $feed);
 		$feed = json_decode($feed_data, true);
@@ -73,6 +73,7 @@ class WallController extends Controller {
 		if ($request->uid == null) {
 			return view('auto.status.poststatus', compact('socials'));
 		}
+
 		$social = Social::where('provider_uid', $request->uid)->get()->first()->toArray();
 		if (!$social) {
 			return back()->with('error', 'ID facebook không tồn tại trong hệ thống !');
@@ -81,21 +82,17 @@ class WallController extends Controller {
 		$feed = '';
 		if (empty($request->message) && empty($request->images)) {
 			return back()->with('error', 'Đăng bài không thành công, bạn phải điền đầy đủ');
-		} elseif (!empty($request->message && !$request->hasFile('images'))) {
-			$feed = json_decode(Curl::to(fb('graph', $social['provider_uid'] . '/feed'))
-					->withData([
-						'message' => $request->message,
-						'access_token' => $social['access_token'],
-					])->post(), true);
-			$this->insertPostStt(time(), $social['id'], $request->message);
 		} elseif ($request->hasFile('images')) {
 			$attached = $this->postUnpublishedPhotos($request->file('images'), $request->caption, $social);
-			$message = [
-				'message' => $request->message,
-				'access_token' => $social['access_token'],
-			];
-			$data = array_merge($attached, $message);
-			$feed = json_decode(Curl::to(fb('graph', $social['provider_uid'] . '/feed'))->withData($data)->post(), true);
+
+			$fields = array_merge([
+				'message' => (!empty($request->message) ? $request->message : null),
+				'access_token' => $social['access_token']
+			], $attached);
+
+			$url_post_stt = mkurl(true, 'graph', 'facebook.com', "v2.9/$social[provider_uid]/feed", $fields);
+			$feed = json_decode(Curl::to($url_post_stt)->post(), true);
+			$this->insertPostStt($social['id'], $request->message);
 		}
 		if (!empty($feed['error'])) {
 			$error = handlingfbcode($feed['error']);
@@ -108,20 +105,22 @@ class WallController extends Controller {
 		$photos = [];
 		$attached_media = [];
 		$media_fbid = [];
+		$count_file = count($files);
 		// upload image lên server và đăng bài viết với chế độ published=false
-		foreach ($files as $key => $value) {
-			if ($file[$key]->isValid()) {
-				$url_picture = upanh($file[$key]->getPathname()); // tmp name
+		for ($i=0; $i < $count_file; $i++) {
+			if ($files[$i]->isValid()) {
+				$url_picture = upanh($files[$i]->getPathname()); // tmp name
+				$url_post_photos = mkurl(true, 'graph', 'facebook.com', "v2.9/$social[provider_uid]/photos", null);
 
-				$photos[$key] = json_decode(Curl::to(fb('graph', $social['provider_uid'] . '/photos'))->withData([
-					'mkurl' => $url_picture,
-					'caption' => $captions[$key],
+				$photos[$i] = json_decode(Curl::to($url_post_photos)->withData([
+					'url' => $url_picture,
+					'caption' => $captions[$i],
 					'published' => 'false',
 					'access_token' => $social['access_token'],
-				])->post())->id;
+				])->post(), true)['id'];
 
-				$attached_media[$key] = 'attached_media[' . $key . ']';
-				$media_fbid[$key] = '{"media_fbid":"' . $photos[$key] . '"}';
+				$attached_media[$i] = 'attached_media[' . $i . ']';
+				$media_fbid[$i] = '{"media_fbid":"' . $photos[$i] . '"}';
 			}
 		}
 		$attached = array_combine($attached_media, $media_fbid);
@@ -133,6 +132,7 @@ class WallController extends Controller {
 		if (!$user) {
 			return back()->with('error', 'User không tồn tại trong hệ thống');
 		}
+
 		$url_del_stt = mkurl(true, 'graph', 'facebook.com', $idStatus, ['access_token' => $user['access_token']]);
 		$delstt = json_decode(Curl::to($url_del_stt)->delete(), true);
 		if ($delstt['success']) {

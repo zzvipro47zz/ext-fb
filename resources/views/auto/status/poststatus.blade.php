@@ -47,7 +47,7 @@
 						<input type="hidden" name="uid" value="">
 						<input type="hidden" name="post_at" value="">
 
-						<textarea class="form-control" name="message" rows="7" placeholder="Nhập caption..."></textarea>
+						<textarea class="form-control" name="message" rows="7" placeholder="Nhập tin..."></textarea>
 
 						<br />
 
