@@ -10,12 +10,16 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
 // group này chỉ hiển thị khi user đã được đăng nhập vào hệ thống
 // name(tên) nào mà không có từ get ở đầu nghĩa là chỉ lấy trang view
-Route::group(['namespace' => 'Facebook', 'prefix' => 'facebook', 'middleware' => 'auth'], function () {
+Route::group(['namespace' => 'Facebook', 'prefix' => 'facebook', 'middleware' => ['auth', 'fb']], function () {
 	Route::group(['prefix' => 'friends'], function () {
-		Route::get('/{uid?}', 'FriendsController@getFriends')->where('uid', '[0-9]+')->name('fb.getfriends');
+		Route::get('/{uid?}', 'FriendsController@viewgetfriends')->where('uid', '[0-9]+')->name('fb.viewgetfriends');
 		Route::post('/{uid}/lmf', 'FriendsController@Ajax_LoadMoreFriends')->where('uid', '[0-9]+')->name('fb.lmf');
-		Route::get('/{uid}/{idFriend}', 'FriendsController@unfriend')->where(['uid' => '[0-9]+', 'idFriend' => '[0-9]+'])->name('fb.unfriend');
+		Route::get('/{uid}/unf/{idFriend}', 'FriendsController@unfriend')->where(['uid' => '[0-9]+', 'idFriend' => '[0-9]+'])->name('fb.unfriend');
 		Route::post('{uid}/ufl', 'FriendsController@unfriend_from_list')->name('fb.ufl'); // ufl <=> unfriend_from_list
+	});
+
+	Route::group(['prefix' => 'subto'], function() {
+		Route::get('/{uid?}', 'SubToController@viewsubto')->name('fb.viewsubto')->where('uid', '[0-9]+');
 	});
 
 	Route::group(['prefix' => 'messenger'], function() {
@@ -49,10 +53,11 @@ Route::group(['prefix' => 'checkproxy'], function () {
 	Route::post('/', 'CheckProxyController@checkproxy')->name('fb.checkproxy');
 });
 
-Route::post('/fblogin', 'SocialController@login_facebook')->name('fb.login');
-
 Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
+Route::get('/updatefbaccount', 'HomeController@check_account');
+
+Route::post('/fblogin', 'SocialController@login_facebook')->name('fb.login');
 
 Route::get('/logout', 'Auth\LoginController@logout');
 

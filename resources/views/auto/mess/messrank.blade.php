@@ -29,7 +29,7 @@
 							<table class="table table-bordered table-hover table-striped" id="dataTables-messrank">
 								<thead>
 									<tr>
-										<th>#</th>
+										<th>Hạng</th>
 										<th>Tên</th>
 										<th>Số tin nhắn</th>
 										<th>Trạng thái</th>
@@ -39,7 +39,7 @@
 								<tbody>
 									@foreach($messrank as $key => $value)
 										<tr>
-											<td>Hạng {{ $key+1 }}</td>
+											<td>{{ $key+1 }}</td>
 											<td>{{ $value['participants']['data'][0]['name'] }}</td>
 											<td>{{ $value['message_count'] }}</td>
 											<td>{{ $value['can_reply'] === false ? 'Bạn không thể trả lời cuộc trò chuyện này' : ($value['unread_count'] > 0 ? 'Bạn có tin nhắn chưa đọc' : 'true') }}</td>
@@ -71,4 +71,14 @@
 			location.reload();
 		});
 	</script>
+@endpush
+@push('lib-css')
+	<!-- DataTables -->
+	<link rel="stylesheet" href="{{ asset('libs/adminlte-2.3.11/plugins/datatables/dataTables.bootstrap.css') }}">
+@endpush
+@push('lib-scripts')
+	<script src="{{ asset('js/table.js') }}"></script>
+	<!-- DataTables -->
+	<script src="{{ asset('libs/adminlte-2.3.11/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+	<script src="{{ asset('libs/adminlte-2.3.11/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
 @endpush

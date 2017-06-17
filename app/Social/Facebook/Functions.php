@@ -40,6 +40,53 @@ function sign_creator($username, $password) {
 	return file_get_contents('https://api.facebook.com/restserver.php?' . http_build_query($data));
 }
 
+function agent() {
+	$userAgents = array(
+		'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/5.0; chromeframe/11.0.696.57)',
+		'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/4.0; GTB7.4; InfoPath.3; SV1; .NET CLR 3.1.76908; WOW64; en-US)',
+		'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 7.1; Trident/5.0)',
+		'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; Media Center PC 6.0; InfoPath.3; MS-RTC LM 8; Zune 4.7)',
+		'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; Media Center PC 6.0; InfoPath.3; MS-RTC LM 8; Zune 4.7',
+		'Mozilla/5.0 (Windows NT 6.2; rv:21.0) Gecko/20130326 Firefox/21.0',
+		'Mozilla/5.0 (Windows; U; MSIE 9.0; WIndows NT 9.0; en-US))',
+		'Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)',
+		'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:21.0) Gecko/20130401 Firefox/21.0',
+		'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:21.0) Gecko/20130331 Firefox/21.0',
+		'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:21.0) Gecko/20130330 Firefox/21.0',
+		'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:21.0) Gecko/20100101 Firefox/21.0',
+		'Mozilla/5.0 (Windows NT 6.1; rv:21.0) Gecko/20130401 Firefox/21.0',
+		'Mozilla/5.0 (Windows NT 6.1; rv:21.0) Gecko/20130328 Firefox/21.0',
+		'Mozilla/5.0 (Windows NT 6.1; rv:21.0) Gecko/20100101 Firefox/21.0',
+		'Mozilla/5.0 (Windows NT 6.0) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.36 Safari/536.5',
+		'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3',
+		'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3',
+		'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3',
+		'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3',
+		'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3',
+		'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3',
+		'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; ru-ru) AppleWebKit/533.16 (KHTML, like Gecko) Version/5.0 Safari/533.16',
+		'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; ko-kr) AppleWebKit/533.16 (KHTML, like Gecko) Version/5.0 Safari/533.16',
+		'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; it-it) AppleWebKit/533.16 (KHTML, like Gecko) Version/5.0 Safari/533.16',
+		'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; HTC-P715a; en-ca) AppleWebKit/533.16 (KHTML, like Gecko) Version/5.0 Safari/533.16',
+		'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; en-us) AppleWebKit/534.1+ (KHTML, like Gecko) Version/5.0 Safari/533.16',
+		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_0) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3',
+		'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; en-au) AppleWebKit/533.16 (KHTML, like Gecko) Version/5.0 Safari/533.16',
+		'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96 Mobile Safari/537.36',
+		'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.9 Safari/536.5',
+		'Opera/9.80 (X11; Linux i686; U; en-GB) Presto/2.2.15 Version/10.00',
+		'Opera/9.80 (X11; Linux i686; U; en) Presto/2.2.15 Version/10.00',
+		'Opera/9.80 (X11; Linux i686; U; Debian; pl) Presto/2.2.15 Version/10.00',
+		'Opera/9.80 (X11; Linux i686; U; de) Presto/2.2.15 Version/10.00',
+		'Opera/9.80 (Windows NT 6.1; U; zh-cn) Presto/2.2.15 Version/10.00',
+		'Opera/9.80 (Windows NT 6.1; U; fi) Presto/2.2.15 Version/10.00',
+		'Opera/9.80 (Windows NT 6.1; U; en) Presto/2.2.15 Version/10.00',
+		'Opera/9.80 (Android; Opera Mini/7.6.40234/37.7148; U; id) Presto/2.12.423 Version/12.16',
+	);
+
+	$rand = rand(0, count($userAgents) - 1);
+	return $userAgents[$rand];
+}
+
 function stripUnicode($str) {
 	if(!$str) return false;
 	$unicode = array(
@@ -121,18 +168,41 @@ function upanh($filename) {
 	return json_decode($response, true)['data']['link'];
 }
 
-function handlingfbcode($error) {
+function CheckAndHandleFBErrCode($arr) {
+	if (!isset($arr['error']) && !isset($arr['error_code'])) {
+		return;
+	}
+	if (isset($arr['error'])) {
+		$arr = $arr['error'];
+	}
 	$message = '';
-	$error_code = isset($error['error_code']) ? $error['error_code'] : $error['code'];
-	switch ($error_code) {
+	$err_code = isset($arr['error_code']) ? $arr['error_code'] : $arr['code'];
+	if (isset($arr['error_code'])) {
+		$err_code = $arr['error_code'];
+		$err_data = json_decode($arr['error_data'], true);
+	} else {
+		$err_code = $arr['code'];
+	}
+
+	switch ($err_code) {
+		case 190:
+			if ($arr['error_subcode'] === 490) {
+				$message = $arr['message'];
+			} elseif ($arr['error_subcode'] === 452) {
+				$message = $arr['message'];
+			}
+			break;
 		case 200:
-			$message = $error['message'] . '. Có thể thiếu access_token!';
+			$message = $arr['message'] . '. Có thể thiếu access_token!';
 			break;
 		case 400:
-			$message = $error['error_msg'];
+			$message = $err_data['error_message'];
+			break;
+		case 401:
+			$message = $arr['error_msg']; // "error_msg" => "Invalid username or password (401)"
 			break;
 		case 405:
-			$message = $error['error_msg'] . 'Account có thể bị checkpoint!';
+			$message = $arr['error_msg'] . 'Account có thể bị checkpoint!';
 			break;
 		default:
 			$message = 'Chưa thiết lập error code!';

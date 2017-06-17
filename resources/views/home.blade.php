@@ -21,7 +21,7 @@
 						<div class="form-group{{ Session::has('error') ? ' has-error' : null }}">
 							<label for="username" class="col-sm-2 control-label">Username</label>
 							<div class="col-sm-10">
-								<input type="text" class="form-control" name="username" placeholder="nhập email hoặc số điện thoại vào đây ...">
+								<input type="text" class="form-control" name="username" value="{{ old('username') }}" placeholder="nhập email hoặc số điện thoại vào đây ...">
 							</div>
 						</div>
 
@@ -66,6 +66,8 @@
 									<th>Email</th>
 									<th>Friends</th>
 									<th>Subscribers</th>
+									<th>Active</th>
+									<th>Status</th>
 								</thead>
 								<tbody>
 									@foreach($socials as $key => $social)
@@ -75,13 +77,19 @@
 											<td>{{ $social['email'] }}</td>
 											<td>{{ $social['friends'] }}</td>
 											<td>{{ $social['subs'] }}</td>
+											<td>{{ ($social['active'] === 1 ? 'true' : 'false') }}</td>
+											<td>{{ $social['status'] === null ? 'Hoạt động' : $social['status'] }}</td>
 										</tr>
 									@endforeach
 								</tbody>
 							</table>
 						</div>
 					@endif
-		
+				</div>
+				<div class="box-footer">
+					<div class="pull-right">
+						<a href="/updatefbaccount" class="btn btn-info">Cập nhật tài khoản facebook</a>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -90,9 +98,8 @@
 @endsection
 @push('scripts')
 	<script>
-		$('#login').click(function(e) {
-			e.preventDefault();
+		document.getElementById('login').onclick = function() {
 			$('#form_login').submit();
-		});
+		};
 	</script>
 @endpush

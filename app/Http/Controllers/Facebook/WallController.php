@@ -11,31 +11,29 @@ use Illuminate\Support\Facades\Auth;
 use Session;
 
 class WallController extends Controller {
-	public function __construct() {
-		$this->middleware('auth');
-	}
-
 	public function getStatus(Request $request, $uid = null) {
 		$socials = Social::where('user_id', Auth::user()->id)->get()->toArray();
-		if (!$socials) {
-			return view('home');
-		}
-
 		if ($uid == null) {
 			return view('auto.status.getstatus', compact('socials'));
 		}
-		$user = Social::where('provider_uid', $uid)->get()->first()->toArray();
+
+		$user = Social::where('provider_uid', $uid)->get()->first();
 		if (!$user) {
-			return back()->with('error', 'Có lỗi xảy ra, uid facebook không đúng !');
+			return redirect('/facebook/status')->with('error', 'Có lỗi xảy ra, uid facebook không đúng !');
 		}
+		$user = $user->toArray();
 		// lấy bài viết trên tường nhà
-		$url_get_feed = mkurl(true, 'graph', 'facebook.com', "v2.9/$uid/feed", ['fields' => 'message,description,story,name,link,type,full_picture,source,created_time', 'access_token' => $user['access_token']]);
+		$url_get_feed = mkurl(true, 'graph', 'facebook.com', "v2.9/$uid/feed", ['fields' => 'id,message,name,description,link,source,story,type,full_picture,created_time,actions,privacy,comments', 'access_token' => $user['access_token']]);
 		$feed = Curl::to($url_get_feed)->get();
 		$feed_data = str_replace('\\n', '<br />', $feed);
 		$feed = json_decode($feed_data, true);
+		if ($err_msg = CheckAndHandleFBErrCode($feed)) {
+			return back()->with('error', $err_msg);
+		}
 
 		$stt_data = $feed['data'];
 		$stt_page = $feed['paging']['next'];
+
 		$request->session()->put('stt_page', $stt_page);
 
 		return view('auto.status.getstatus', compact('user', 'socials', 'stt_data'));
@@ -45,22 +43,23 @@ class WallController extends Controller {
 		if ($request->ajax()) {
 			$user = Social::where('provider_uid', $uid)->get()->first();
 			if (!$user) {
-				return back()->with('error', 'User Facebook ID không đúng !');
+				return 'Invalid Facebook ID';
 			}
-			$stt_page = $request->session()->get('stt_page');
+			if (session('stt_page')) {
+				$stt_page = $request->session()->get('stt_page');
+				$request->session()->forget('stt_page');
 
-			$feed = Curl::to($stt_page)->get();
-			$feed_data = str_replace('\\n', '<br />', $feed);
-			$feed = json_decode($feed_data, true);
-
-			$stt_data = $feed['data'];
-			if (empty($stt_data)) {
-				return 'okay';
+				$feed = Curl::to($stt_page)->get();
+				$feed_data = str_replace('\\n', '<br />', $feed);
+				$feed = json_decode($feed_data, true);
 			}
-			$stt_page = $feed['paging']['next'];
-
-			$request->session()->put('stt_page', $stt_page);
-			return $stt_data;
+			if (isset($feed['paging']['next']) && isset($stt_page)) {
+				$request->session()->put('stt_page', $feed['paging']['next']);
+			}
+			if (!empty($feed['data'])) {
+				return $feed['data'];
+			}
+			return 'okay';
 		}
 		return redirect('home')->with('error', 'Yêu cầu không đúng !');
 	}
@@ -79,25 +78,35 @@ class WallController extends Controller {
 			return back()->with('error', 'ID facebook không tồn tại trong hệ thống !');
 		}
 
-		$feed = '';
+		$feed = null;
 		if (empty($request->message) && empty($request->images)) {
 			return back()->with('error', 'Đăng bài không thành công, bạn phải điền đầy đủ');
-		} elseif ($request->hasFile('images')) {
-			$attached = $this->postUnpublishedPhotos($request->file('images'), $request->caption, $social);
-
-			$fields = array_merge([
-				'message' => (!empty($request->message) ? $request->message : null),
-				'access_token' => $social['access_token']
-			], $attached);
+		} elseif (!empty($request->message) || $request->hasFile('images')) {
+			if (!empty($request->message)) {
+				$tmp = ['message' => $request->message];
+			}
+			$tmp['access_token'] = $social['access_token'];
+			$fields = $tmp;
+			if ($request->hasFile('images')) {
+				$attached = $this->postUnpublishedPhotos($request->file('images'), $request->caption, $social);
+				$fields = array_merge($tmp, ['tmp' => 'tmp']);
+			}
 
 			$url_post_stt = mkurl(true, 'graph', 'facebook.com', "v2.9/$social[provider_uid]/feed", $fields);
 			$feed = json_decode(Curl::to($url_post_stt)->post(), true);
+			if ($err_msg = CheckAndHandleFBErrCode($feed)) {
+				return back()->with('error', $err_msg);
+			}
+
 			$this->insertPostStt($social['id'], $request->message);
+		} else {
+			return back()->with('error', 'An error occurred. vui lòng liên hệ QTV để fix (:');
 		}
-		if (!empty($feed['error'])) {
-			$error = handlingfbcode($feed['error']);
-			return back()->with('error', 'Lỗi ' . $error . ', vui lòng liên hệ QTV để fix (:');
+
+		if ($err_msg = CheckAndHandleFBErrCode($feed)) {
+			return back()->with('error', $err_msg);
 		}
+
 		return back()->with('success', 'Đăng bài thành công. <a href="https://fb.com/' . $feed['id'] . '" target="_blank">Ấn vào đây</a> để xem bài viết của bạn');
 	}
 
@@ -135,8 +144,8 @@ class WallController extends Controller {
 
 		$url_del_stt = mkurl(true, 'graph', 'facebook.com', $idStatus, ['access_token' => $user['access_token']]);
 		$delstt = json_decode(Curl::to($url_del_stt)->delete(), true);
-		if ($delstt['success']) {
-			return back()->with('success', 'Xóa bài viết thành công !');
+		if ($delstt === true) {
+			return back()->with(['success' => 'Xóa bài viết thành công !', 'del' => true]);
 		}
 		return back()->with('error', 'Có lỗi xảy ra khi xóa bài viết !');
 	}

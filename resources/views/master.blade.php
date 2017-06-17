@@ -13,20 +13,19 @@
 	<!-- Bootstrap 3.3.6 -->
 	<link rel="stylesheet" href="{{ asset('libs/adminlte-2.3.11/bootstrap/css/bootstrap.min.css') }}">
 	<!-- Font Awesome -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="{{ asset('libs/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+	{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> --}}
 	<!-- Ionicons -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-	<!-- jvectormap -->
-	<link rel="stylesheet" href="{{ asset('libs/adminlte-2.3.11/plugins/jvectormap/jquery-jvectormap-1.2.2.css') }}">
 	<!-- Theme style -->
 	<link rel="stylesheet" href="{{ asset('libs/adminlte-2.3.11/dist/css/AdminLTE.min.css') }}">
 	<!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
 	<link rel="stylesheet" href="{{ asset('libs/adminlte-2.3.11/dist/css/skins/_all-skins.min.css') }}">
-	@stack('libs-css')
+	
+	@stack('lib-css')
 
 	{{-- my css --}}
 	<link rel="stylesheet" href="{{ asset('css/scrolltop.css') }}">
-
 	<link rel="stylesheet" href="{{ asset('css/send_sms.css') }}">
 	
 	<!-- Scripts -->
@@ -65,22 +64,13 @@
 	<script src="{{ asset('libs/adminlte-2.3.11/plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
 	<!-- Bootstrap 3.3.6 -->
 	<script src="{{ asset('libs/adminlte-2.3.11/bootstrap/js/bootstrap.min.js') }}"></script>
-	<!-- FastClick -->
-	<script src="{{ asset('libs/adminlte-2.3.11/plugins/fastclick/fastclick.js') }}"></script>
+	{{-- libs --}}
+	@stack('lib-scripts')
 	<!-- AdminLTE App -->
 	<script src="{{ asset('libs/adminlte-2.3.11/dist/js/app.min.js') }}"></script>
-	<!-- Sparkline -->
-	<script src="{{ asset('libs/adminlte-2.3.11/plugins/sparkline/jquery.sparkline.min.js') }}"></script>
-	<!-- jvectormap -->
-	<script src="{{ asset('libs/adminlte-2.3.11/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js') }}"></script>
-	<script src="{{ asset('libs/adminlte-2.3.11/plugins/jvectormap/jquery-jvectormap-world-mill-en.js') }}"></script>
-	<!-- SlimScroll 1.3.0 -->
-	<script src="{{ asset('libs/adminlte-2.3.11/plugins/slimScroll/jquery.slimscroll.min.js') }}"></script>
-	@stack('libs-scripts')
 
 	<!-- my js -->
 	<script src="{{ asset('js/functions.js') }}"></script>
-	<script src="{{ asset('js/table.js') }}"></script>
 	<script src="{{ asset('js/checkbox.js') }}"></script>
 	<script src="{{ asset('js/ready.js') }}"></script>
 

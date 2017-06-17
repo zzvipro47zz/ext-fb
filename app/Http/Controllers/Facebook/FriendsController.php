@@ -9,48 +9,56 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class FriendsController extends Controller {
-	protected $user_agent = 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96 Mobile Safari/537.36';
+	protected $user_agent;
 
 	public function __construct() {
-		$this->middleware('auth');
+		$this->user_agent = agent();
 	}
 
-	public function getFriends(Request $request, $uid = null) {
+	public function viewgetfriends(Request $request, $uid = null) {
 		$socials = Social::where('user_id', Auth::user()->id)->get()->toArray();
-		if (!$socials) {
-			return redirect('home');
-		}
+
 		if ($uid == null) {
-			return view('auto.friends', compact('socials'));
+			return view('auto.friends.getfriends', compact('socials'));
 		}
-		// $user dùng để lấy user đã được chọn để get friend
-		$user = Social::where('provider_uid', $uid)->get()->first()->toArray();
+		// get friend của $uid được truyền vào
+		$user = Social::where('provider_uid', $uid)->get()->first();
 		if (!$user) {
 			return back()->with('error', 'Có lỗi xảy ra, uid facebook không đúng !');
 		}
+		$user = $user->toArray();
 
 		$url_info_fr = mkurl(true, 'graph', 'facebook.com', "v2.9/$uid/friends", ['fields' => 'name,picture,cover{source}', 'access_token' => $user['access_token']]);
 		$friends = json_decode(Curl::to($url_info_fr)->get(), true);
+		if ($err_msg = CheckAndHandleFBErrCode($friends)) {
+			return redirect('home')->with('error', $err_msg);
+		}
+		
 		$friends_data = $friends['data'];
 		$friends_page = $friends['paging']['next'];
 		$request->session()->put('friends_page', $friends_page);
 		$summary = $friends['summary']['total_count'];
 
-		return view('auto.friends', compact('user', 'socials', 'friends_data', 'summary'));
+		return view('auto.friends.getfriends', compact('user', 'socials', 'friends_data', 'summary'));
 	}
 
 	public function Ajax_LoadMoreFriends(Request $request, $uid) {
 		if ($request->ajax()) {
 			$user = Social::where('provider_uid', $uid)->get()->first()->toArray();
-			$friends_page = $request->session()->get('friends_page');
-			$friends = json_decode(Curl::to($friends_page)->get(), true);
-			$friends_data = $friends['data'];
-			$friends_page = $friends['paging']['next'];
-			$request->session()->put('friends_page', $friends_page);
-
-			return $friends_data;
+			if ($request->session()->has('friends_page')) {
+				$friends_page = $request->session()->get('friends_page');
+				$request->session()->forget('friends_page');
+				$friends = json_decode(Curl::to($friends_page)->get(), true);
+			}
+			if (isset($friends['paging']['next']) && isset($friends_page)) {
+				$request->session()->put('friends_page', $friends['paging']['next']);
+			}
+			if (!empty($friends['data'])) {
+				return $friends['data'];
+			}
+			return 'okay';
 		}
-		return redirect('home')->with('error', 'Yêu cầu không đúng !');
+		return 'notokay';
 	}
 
 	public function unfriend(Request $request, $uid, $idFriend) {
@@ -73,7 +81,7 @@ class FriendsController extends Controller {
 			'confirm' => 'Confirmer',
 		];
 		$url_unfr = mkurl(true, 'mbasic', 'facebook.com', 'a/removefriend.php', null);
-		Curl::to(fb('mbasic', 'a/removefriend.php'))
+		Curl::to(mkurl(true, 'mbasic', 'facebook.com', 'a/removefriend.php'))
 			->withOption('USERAGENT', $this->user_agent)
 			->withData($post_fields)
 			->withHeader('cookie: '.$cookie)->post();
@@ -82,20 +90,23 @@ class FriendsController extends Controller {
 	}
 
 	public function unfriend_from_list(Request $request, $uid) {
-		$user = Social::where('provider_uid', $uid)->get()->first()->toArray();
-		$cookie = $user['cookie'];
-		$list_friend = $request->list_friend;
+		if ($request->ajax()) {
+			$user = Social::where('provider_uid', $uid)->get()->first()->toArray();
+			$cookie = $user['cookie'];
+			$id = $request->id;
 
-		foreach ($list_friend as $value) {
-			$url_getdata_unfr = mkurl(true, 'mbasic', 'facebook.com', 'removefriend.php', ['friend_id' => $value]);
+			$url_getdata_unfr = mkurl(true, 'mbasic', 'facebook.com', 'removefriend.php', ['friend_id' => $id]);
 			$get_data = Curl::to($url_getdata_unfr)
 				->withOption('USERAGENT', $this->user_agent)
 				->withHeader('cookie: '.$cookie)->get();
 
 			preg_match('/fb_dtsg" value="(.+?)"/i', $get_data, $fb_dtsg);
+			if (empty($fb_dtsg)) {
+				return 'notokay';
+			}
 
 			$post_fields = [
-				'friend_id' => $value,
+				'friend_id' => $id,
 				'fb_dtsg' => $fb_dtsg[1],
 				'unref' => 'profile_gear',
 				'confirm' => 'Confirmer',
@@ -105,8 +116,13 @@ class FriendsController extends Controller {
 				->withOption('USERAGENT', $this->user_agent)
 				->withData($post_fields)
 				->withHeader('cookie: '.$cookie)->post();
-		}
 
-		return back()->with('success', 'Hủy kết bạn theo danh sách mà bạn đã chọn, thành công !');
+			return 'okay';
+		}
+		return 'notokay';
+	}
+
+	public function unfriend_all() {
+		
 	}
 }

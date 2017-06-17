@@ -13,13 +13,15 @@ class CreateSocialsTable extends Migration {
 			$table->string('email')->nullable();
 			$table->string('phone', 20)->nullable();
 			$table->unsignedTinyInteger('gender')->comment('0: Nữ - 1: Nam');
-			$table->string('password');
+			$table->string('password')->nullable();
 			$table->string('link');
 			$table->UnsignedInteger('subs')->default(0);
 			$table->UnsignedInteger('friends')->default(0);
-			$table->string('access_token', 300);
-			$table->string('cookie', 255);
+			$table->string('access_token', 300)->nullable();
+			$table->string('cookie', 255)->nullable();
 			$table->string('provider');
+			$table->unsignedTinyInteger('active');
+			$table->string('status')->nullable();
 			$table->unsignedInteger('user_id');
 			$table->foreign('user_id')->references('id')->on('users');
 			$table->timestamps();

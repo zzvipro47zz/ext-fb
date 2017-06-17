@@ -8,7 +8,7 @@
 					<div class="form-group">
 						<div class="input-group">
 							<span class="input-group-addon">Đăng với tư cách:</span>
-							<select name="users-poststt" id="users" class="form-control">
+							<select name="users-poststt" id="users" class="form-control" size="5" multiple>
 								@foreach($socials as $social)
 									<option value="{{ $social['provider_uid'] }}" {{ old('users-poststt') ? 'selected' : null }}">{{ $social['name'] }}</option>
 								@endforeach
@@ -121,10 +121,10 @@
 		// ./file upload
 	</script>
 @endpush
-@push('libs-css')
+@push('lib-css')
 	<link rel="stylesheet" href="{{ asset('libs/datetimepicker-master/jquery.datetimepicker.css') }}"/ >
 @endpush
-@push('libs-scripts')
+@push('lib-scripts')
 	<script src="{{ asset('libs/datetimepicker-master/build/jquery.datetimepicker.full.min.js') }}"></script>
 	<script src="{{ asset('libs/bootstrap-filestyle-1.2.1/bootstrap-filestyle.min.js') }}"></script>
 @endpush

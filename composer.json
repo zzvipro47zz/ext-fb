@@ -9,8 +9,7 @@
 		"facebook/graph-sdk": "^5.4",
 		"ixudra/curl": "^6.8",
 		"laravel/framework": "5.4.*",
-		"laravel/tinker": "~1.0",
-		"thiagoalessio/tesseract_ocr": "^1.1"
+		"laravel/tinker": "~1.0"
 	},
 	"require-dev": {
 		"fzaninotto/faker": "~1.4",

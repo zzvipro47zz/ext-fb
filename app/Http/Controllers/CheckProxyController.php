@@ -24,7 +24,6 @@ class CheckProxyController extends Controller {
 			$proxy_info = check_proxy($proxy);
 			if ($proxy_info['type'] === 'success') {
 				$file = fopen($url_file, 'a');
-				 // . '|' . $proxy_info['response_time']
 				fwrite($file, $proxy . "\n");
 				fclose($file);
 				return 'okay';
